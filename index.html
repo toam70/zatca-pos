@@ -76,6 +76,7 @@
     padding: 0 24px;
     display: flex; gap: 4px;
     border-top: 1px solid rgba(255,255,255,0.1);
+    position: sticky; top: 64px; z-index: 99;
   }
   .tab-btn {
     padding: 10px 20px; background: none; border: none; cursor: pointer;
@@ -772,13 +773,17 @@
       flex-wrap: nowrap !important;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+      position: sticky !important;
+      top: 56px !important;
+      z-index: 99 !important;
     }
     .nav-tabs::-webkit-scrollbar { display: none; }
     .tab-btn {
-      padding: 10px 14px !important;
+      padding: 12px 16px !important;
       font-size: 13px !important;
       white-space: nowrap !important;
       flex-shrink: 0 !important;
+      min-height: 44px !important;
     }
 
     /* Main layout */
@@ -3409,6 +3414,7 @@ function showScreen(id, el) {
   document.getElementById('screen-' + id).classList.add('active');
   const btn = el || (typeof event !== 'undefined' && event?.target);
   if (btn) btn.closest('.tab-btn, button')?.classList.add('active') || btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
   if (id === 'invoices') renderInvoicesTable();
   if (id === 'reports') renderReports();
   if (id === 'products') renderProductsTable();
