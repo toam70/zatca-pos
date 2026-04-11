@@ -731,6 +731,18 @@
     .products-grid {
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
     }
+    /* فرض عمودين على inline grids في التابلت */
+    [style*="grid-template-columns: repeat(4"],
+    [style*="grid-template-columns:repeat(4"] {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    [style*="grid-template-columns:1fr 1fr 1fr"],
+    [style*="grid-template-columns: 1fr 1fr 1fr"] {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .settings-grid {
+      grid-template-columns: 1fr !important;
+    }
   }
 
   /* ══════════════════════════════════════════
@@ -886,11 +898,30 @@
     .po-grid { grid-template-columns: 1fr !important; }
     .cust-detail-grid { grid-template-columns: 1fr !important; }
 
+    /* فرض عمود واحد على كل الشبكات الـ inline */
+    [style*="grid-template-columns: 1fr 1fr"],
+    [style*="grid-template-columns:1fr 1fr"],
+    [style*="grid-template-columns: repeat(4"],
+    [style*="grid-template-columns:repeat(4"],
+    [style*="grid-template-columns: repeat(3"],
+    [style*="grid-template-columns:repeat(3"],
+    [style*="grid-template-columns:1fr 1fr 1fr"] {
+      grid-template-columns: 1fr !important;
+    }
+
     /* بيانات شاشة الدخول */
     .login-card { width: 94vw !important; padding: 20px !important; }
 
     /* Card Headers */
     .card-header { font-size: 16px !important; padding: 14px 16px !important; }
+
+    /* عناوين الصفحات */
+    h2 { font-size: 18px !important; }
+
+    /* الفاتورة على الجوال */
+    .invoice-print { padding: 20px !important; }
+    .inv-company h2 { font-size: 18px !important; }
+    .inv-title h1 { font-size: 22px !important; }
   }
 
   @media (max-width: 480px) {
@@ -910,6 +941,23 @@
     .stat-val { font-size: 24px !important; }
     .cart-header h3 { font-size: 16px !important; }
     .total-row.grand { font-size: 18px !important; }
+
+    /* الأزرار على الشاشات الصغيرة */
+    .btn { padding: 12px !important; font-size: 14px !important; }
+    .pay-method { font-size: 12px !important; padding: 8px 4px !important; }
+    .pay-method .pay-icon { font-size: 18px !important; }
+
+    /* عناوين الشاشات */
+    h2 { font-size: 16px !important; }
+
+    /* قيم السلة */
+    .total-row { font-size: 14px !important; }
+    .cart-item-name { font-size: 14px !important; }
+    .cart-item-price { font-size: 13px !important; }
+
+    /* المودال */
+    .modal { margin: 10px auto !important; }
+    .invoice-print { padding: 16px !important; }
   }
 
   /* PRINT */
