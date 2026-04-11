@@ -1780,7 +1780,7 @@
 
   <!-- RETURNS SCREEN -->
   <div class="screen" id="screen-returns">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
       <div class="stat-card">
         <div class="stat-icon">↩️</div>
         <div class="stat-val" id="retTotalCount">0</div>
@@ -1853,7 +1853,7 @@
         <div class="stat-change stat-up">مرسلة</div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div class="two-col">
       <div class="card">
         <div class="card-header">📈 المبيعات حسب طريقة الدفع</div>
         <div class="card-body" id="paymentReport"></div>
@@ -3459,9 +3459,9 @@ function calcNewProdMargin() {
   const excl  = newVatMode === 1 ? raw / 1.15 : raw;
   const tax   = excl * 0.15;
   const incl  = excl + tax;
-  document.getElementById('newPreviewEx').textContent  = excl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('newPreviewTax').textContent = tax.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('newPreviewInc').textContent = incl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('newPreviewEx').innerHTML  = excl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('newPreviewTax').innerHTML = tax.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('newPreviewInc').innerHTML = incl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
   if (cost > 0 && excl > 0) {
     const margin = ((excl - cost) / excl * 100).toFixed(1);
     const profit = (excl - cost).toFixed(2);
@@ -3529,9 +3529,9 @@ function calcEditProdMargin() {
   const excl  = editVatMode === 1 ? raw / 1.15 : raw;
   const tax   = excl * 0.15;
   const incl  = excl + tax;
-  document.getElementById('editPreviewEx').textContent  = excl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('editPreviewTax').textContent = tax.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('editPreviewInc').textContent = incl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('editPreviewEx').innerHTML  = excl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('editPreviewTax').innerHTML = tax.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('editPreviewInc').innerHTML = incl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
   if (cost > 0 && excl > 0) {
     const margin = ((excl - cost) / excl * 100).toFixed(1);
     const profit = (excl - cost).toFixed(2);
@@ -3710,10 +3710,10 @@ function updateTotals() {
   const rate = settings.vatRate || settings.taxRate || 15;
   const vatAmt = taxable * (rate / 100);
   const grand = taxable + vatAmt;
-  document.getElementById('subtotal').textContent = sub.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('discountDisplay').textContent = disc.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('vatAmount').textContent = vatAmt.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('grandTotal').textContent = grand.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('subtotal').innerHTML = sub.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('discountDisplay').innerHTML = disc.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('vatAmount').innerHTML = vatAmt.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('grandTotal').innerHTML = grand.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
 }
 
 function clearCart() {
@@ -4562,7 +4562,7 @@ function addPOItem() {
 
 function renderPOItems() {
   const total = currentPOItems.reduce((s,i) => s + i.costPrice * i.qty, 0);
-  document.getElementById('poTotalDisplay').textContent = total.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('poTotalDisplay').innerHTML = total.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
   const el = document.getElementById('poItemsList');
   if (!currentPOItems.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">أضف منتجات لأمر الشراء</div>'; return; }
   el.innerHTML = currentPOItems.map((item, idx) => `
@@ -5381,10 +5381,10 @@ function updateQuotTotals() {
   const taxable = sub - disc;
   const vat = taxable * 0.15;
   const grand = taxable + vat;
-  document.getElementById('qSubtotal').textContent = sub.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('qDiscount').textContent = disc.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('qVat').textContent = vat.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('qGrand').textContent = grand.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('qSubtotal').innerHTML = sub.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('qDiscount').innerHTML = disc.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('qVat').innerHTML = vat.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('qGrand').innerHTML = grand.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
 }
 
 function saveQuotation(status) {
@@ -7091,9 +7091,9 @@ function updateReturnPreview() {
   const sub = returnItemsData.reduce((s, i) => s + i.price * i.returnQty, 0);
   const vat = sub * rate;
   const total = sub + vat;
-  document.getElementById('retPreviewSub').textContent   = sub.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('retPreviewVat').textContent   = vat.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('retPreviewTotal').textContent = total.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('retPreviewSub').innerHTML   = sub.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('retPreviewVat').innerHTML   = vat.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('retPreviewTotal').innerHTML = total.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
 }
 
 document.addEventListener('change', function(e) {
@@ -7167,7 +7167,7 @@ function renderReturnsTable() {
   const c2 = document.getElementById('retTotalAmount');
   const c3 = document.getElementById('retTotalItems');
   if (c1) c1.textContent = returns.length;
-  if (c2) c2.textContent = totalAmt.toFixed(0) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  if (c2) c2.innerHTML = totalAmt.toFixed(0) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
   if (c3) c3.textContent = totalItems;
 
   const tbody = document.getElementById('returnsTable');
