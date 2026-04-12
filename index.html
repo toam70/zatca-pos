@@ -3880,7 +3880,6 @@ function showInvoiceModal(inv) {
       <!-- QR -->
       <div style="text-align:center;margin:0 12px;">
         <div id="qrCode${inv.id}" style="width:90px;height:90px;"></div>
-        <div style="font-size:9px;color:#888;margin-top:4px;">امسح للتحقق</div>
       </div>
       <!-- عنوان الفاتورة -->
       <div style="text-align:left;min-width:160px;">
@@ -4004,30 +4003,9 @@ function showInvoiceModal(inv) {
       <div style="font-size:12px;font-weight:900;color:#0A3D2E;">${tafqeet(inv.grandTotal)}</div>
     </div>
 
-    <!-- ══ بيانات ZATCA ══ -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-      <div style="background:#f5f9f7;border:1px solid #d0e8dc;border-radius:6px;padding:8px 12px;font-size:10px;">
-        <div style="font-weight:800;color:#0A3D2E;margin-bottom:4px;">🏛️ بيانات التوافق مع ZATCA</div>
-        <div>UUID: <span style="font-family:'IBM Plex Mono',monospace;">${inv.uuid}</span></div>
-        <div>Hash: <span style="font-family:'IBM Plex Mono',monospace;">${inv.hash.substring(0,24)}...</span></div>
-        <div style="margin-top:4px;font-weight:700;color:#0A3D2E;">✓ متوافق مع المرحلة الثانية - ZATCA Phase 2</div>
-      </div>
-      <div style="background:#f5f9f7;border:1px solid #d0e8dc;border-radius:6px;padding:8px 12px;font-size:10px;">
-        <div style="font-weight:800;color:#0A3D2E;margin-bottom:4px;">📋 تفاصيل الفاتورة</div>
-        <div>نوع الفاتورة: ${typeMapAr[inv.type]||'فاتورة'}</div>
-        <div>Invoice Type: ${typeMapEn[inv.type]||'Invoice'}</div>
-        <div>طريقة الدفع: ${payMap[inv.payMethod]||inv.payMethod}</div>
-        <div>رقم الفاتورة: ${inv.number}</div>
-      </div>
-    </div>
-
     <!-- ══ تذييل ══ -->
-    <div style="text-align:center;border-top:1px dashed #ccc;padding-top:8px;font-size:10px;color:#888;">
-      <div style="font-weight:700;color:#0A3D2E;margin-bottom:3px;">
-        هذه الفاتورة مُولَّدة إلكترونياً وفق متطلبات هيئة الزكاة والضريبة والجمارك — المرحلة الثانية
-      </div>
-      <div>This invoice is electronically generated per ZATCA E-Invoicing Phase 2 requirements</div>
-      <div style="margin-top:4px;">جميع المبالغ بالريال السعودي (SAR) • All amounts in Saudi Riyal</div>
+    <div style="text-align:center;border-top:1px dashed #ccc;padding-top:8px;font-size:11px;color:#888;">
+      <div style="margin-top:4px;">جميع المبالغ بالريال السعودي (ر.س)</div>
     </div>
   </div>
   `;
