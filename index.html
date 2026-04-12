@@ -3865,7 +3865,7 @@ function showInvoiceModal(inv) {
   <div style="font-family:Cairo,Arial,sans-serif;direction:rtl;color:#111;background:white;padding:16px;">
 
     <!-- ══ رأس الفاتورة ══ -->
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:2px solid #0A3D2E;margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:2px solid #0A3D2E;margin-bottom:12px;">
       <!-- شعار + اسم -->
       <div style="flex:1;">
         <div style="font-size:20px;font-weight:900;color:#0A3D2E;">${settings.companyNameAr}</div>
@@ -3878,7 +3878,7 @@ function showInvoiceModal(inv) {
         </div>
       </div>
       <!-- QR -->
-      <div style="text-align:center;margin:0 12px;">
+      <div style="text-align:center;margin:0 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
         <div id="qrCode${inv.id}" style="width:90px;height:90px;"></div>
       </div>
       <!-- عنوان الفاتورة -->
