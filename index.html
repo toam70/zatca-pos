@@ -25,8 +25,11 @@
 
   /* رمز الريال السعودي */
   .sar-symbol {
-    font-family: 'Arial', 'Segoe UI', sans-serif;
-    font-size: 1em;
+    font-family: 'Cairo', 'Arial', sans-serif;
+    font-size: 0.85em;
+    font-weight: 700;
+    margin-right: 2px;
+    color: inherit;
   }
   body {
     font-family: 'Cairo', sans-serif;
@@ -1294,22 +1297,7 @@
   }
   .sa-toast.show { transform:translateX(-50%) translateY(0); }
 
-  /* رمز الريال السعودي الجديد */
-  .sar-symbol {
-    font-family: 'Noto Sans Arabic', 'Cairo', Arial, sans-serif;
-    font-weight: 900;
-    display: inline-block;
-    line-height: 1;
-  }
-  /* SVG inline للرمز الرسمي */
-  .sar-icon {
-    display: inline-block;
-    width: 1.1em;
-    height: 0.85em;
-    vertical-align: middle;
-    margin-left: 2px;
-    fill: currentColor;
-  }
+  /* لم يعد مستخدمًا - الرمز الآن نصي */
 
 </style>
 </head>
@@ -1753,13 +1741,13 @@
             <input type="number" id="discountVal" value="0" min="0" oninput="updateTotals()">
             <select id="discountType" onchange="updateTotals()">
               <option value="pct">%</option>
-              <option value="fixed"><svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></option>
+              <option value="fixed"><span class="sar-symbol">ر.س</span></option>
             </select>
           </div>
-          <div class="total-row"><span class="total-label">المجموع قبل الضريبة</span><span class="total-value" id="subtotal">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span></div>
-          <div class="total-row vat-row"><span class="total-label">الخصم</span><span class="total-value" id="discountDisplay">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span></div>
-          <div class="total-row vat-row"><span class="total-label">ضريبة القيمة المضافة (15%)</span><span class="total-value" id="vatAmount">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span></div>
-          <div class="total-row grand"><span class="total-label">الإجمالي شامل الضريبة</span><span class="total-value" id="grandTotal">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span></div>
+          <div class="total-row"><span class="total-label">المجموع قبل الضريبة</span><span class="total-value" id="subtotal">0.00 <span class="sar-symbol">ر.س</span></span></div>
+          <div class="total-row vat-row"><span class="total-label">الخصم</span><span class="total-value" id="discountDisplay">0.00 <span class="sar-symbol">ر.س</span></span></div>
+          <div class="total-row vat-row"><span class="total-label">ضريبة القيمة المضافة (15%)</span><span class="total-value" id="vatAmount">0.00 <span class="sar-symbol">ر.س</span></span></div>
+          <div class="total-row grand"><span class="total-label">الإجمالي شامل الضريبة</span><span class="total-value" id="grandTotal">0.00 <span class="sar-symbol">ر.س</span></span></div>
         </div>
 
         <!-- Payment -->
@@ -2386,13 +2374,13 @@
                 <input type="number" id="qDiscVal" value="0" min="0" oninput="updateQuotTotals()" style="flex:1;padding:7px 10px;border:2px solid var(--border);border-radius:8px;font-family:'Cairo';font-size:12px;outline:none;">
                 <select id="qDiscType" onchange="updateQuotTotals()" style="padding:7px 8px;border:2px solid var(--border);border-radius:8px;font-family:'Cairo';font-size:12px;outline:none;">
                   <option value="pct">%</option>
-                  <option value="fixed"><svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></option>
+                  <option value="fixed"><span class="sar-symbol">ر.س</span></option>
                 </select>
               </div>
-              <div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px dashed var(--border);"><span>المجموع قبل الضريبة</span><span id="qSubtotal" style="font-family:'IBM Plex Mono',monospace;font-weight:700;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span></div>
-              <div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px dashed var(--border);color:var(--text-muted);"><span>الخصم</span><span id="qDiscount" style="font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span></div>
-              <div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px dashed var(--border);color:var(--text-muted);"><span>ضريبة القيمة المضافة 15%</span><span id="qVat" style="font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span></div>
-              <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;padding:8px 0;color:var(--primary);"><span>الإجمالي</span><span id="qGrand" style="font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px dashed var(--border);"><span>المجموع قبل الضريبة</span><span id="qSubtotal" style="font-family:'IBM Plex Mono',monospace;font-weight:700;">0.00 <span class="sar-symbol">ر.س</span></span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px dashed var(--border);color:var(--text-muted);"><span>الخصم</span><span id="qDiscount" style="font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px dashed var(--border);color:var(--text-muted);"><span>ضريبة القيمة المضافة 15%</span><span id="qVat" style="font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></span></div>
+              <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;padding:8px 0;color:var(--primary);"><span>الإجمالي</span><span id="qGrand" style="font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></span></div>
             </div>
           </div>
 
@@ -2484,15 +2472,15 @@
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;">
           <div>
             <div style="font-size:12px;color:var(--text-muted);font-weight:700;margin-bottom:3px;">المبلغ بدون ضريبة</div>
-            <div id="retPreviewSub" style="font-size:14px;font-weight:900;color:#c0392b;font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+            <div id="retPreviewSub" style="font-size:14px;font-weight:900;color:#c0392b;font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></div>
           </div>
           <div>
             <div style="font-size:12px;color:var(--text-muted);font-weight:700;margin-bottom:3px;">الضريبة المستردة</div>
-            <div id="retPreviewVat" style="font-size:14px;font-weight:900;color:#e67e22;font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+            <div id="retPreviewVat" style="font-size:14px;font-weight:900;color:#e67e22;font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></div>
           </div>
           <div>
             <div style="font-size:12px;color:var(--text-muted);font-weight:700;margin-bottom:3px;">إجمالي المسترد</div>
-            <div id="retPreviewTotal" style="font-size:15px;font-weight:900;color:#c0392b;font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+            <div id="retPreviewTotal" style="font-size:15px;font-weight:900;color:#c0392b;font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></div>
           </div>
         </div>
       </div>
@@ -2645,15 +2633,15 @@
         grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
         <div>
           <div style="font-size:12px;color:var(--text-muted);font-weight:700;margin-bottom:3px;">سعر بدون ضريبة</div>
-          <div id="newPreviewEx" style="font-size:14px;font-weight:900;color:#0A3D2E;font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+          <div id="newPreviewEx" style="font-size:14px;font-weight:900;color:#0A3D2E;font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></div>
         </div>
         <div>
           <div style="font-size:12px;color:var(--text-muted);font-weight:700;margin-bottom:3px;">الضريبة 15%</div>
-          <div id="newPreviewTax" style="font-size:14px;font-weight:900;color:#e67e22;font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+          <div id="newPreviewTax" style="font-size:14px;font-weight:900;color:#e67e22;font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></div>
         </div>
         <div>
           <div style="font-size:12px;color:var(--text-muted);font-weight:700;margin-bottom:3px;">شامل الضريبة</div>
-          <div id="newPreviewInc" style="font-size:14px;font-weight:900;color:var(--accent);font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+          <div id="newPreviewInc" style="font-size:14px;font-weight:900;color:var(--accent);font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></div>
         </div>
       </div>
 
@@ -2765,15 +2753,15 @@
         grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
         <div>
           <div style="font-size:12px;color:var(--text-muted);font-weight:700;margin-bottom:3px;">سعر بدون ضريبة</div>
-          <div id="editPreviewEx" style="font-size:14px;font-weight:900;color:#0A3D2E;font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+          <div id="editPreviewEx" style="font-size:14px;font-weight:900;color:#0A3D2E;font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></div>
         </div>
         <div>
           <div style="font-size:12px;color:var(--text-muted);font-weight:700;margin-bottom:3px;">الضريبة 15%</div>
-          <div id="editPreviewTax" style="font-size:14px;font-weight:900;color:#e67e22;font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+          <div id="editPreviewTax" style="font-size:14px;font-weight:900;color:#e67e22;font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></div>
         </div>
         <div>
           <div style="font-size:12px;color:var(--text-muted);font-weight:700;margin-bottom:3px;">شامل الضريبة</div>
-          <div id="editPreviewInc" style="font-size:14px;font-weight:900;color:var(--accent);font-family:'IBM Plex Mono',monospace;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+          <div id="editPreviewInc" style="font-size:14px;font-weight:900;color:var(--accent);font-family:'IBM Plex Mono',monospace;">0.00 <span class="sar-symbol">ر.س</span></div>
         </div>
       </div>
 
@@ -2880,7 +2868,7 @@
       <div id="poItemsList" style="margin-bottom:16px;min-height:60px;"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:8px;padding:12px 16px;">
         <span style="font-weight:700;">إجمالي أمر الشراء:</span>
-        <span style="font-size:18px;font-weight:900;font-family:'IBM Plex Mono',monospace;" id="poTotalDisplay">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span>
+        <span style="font-size:18px;font-weight:900;font-family:'IBM Plex Mono',monospace;" id="poTotalDisplay">0.00 <span class="sar-symbol">ر.س</span></span>
       </div>
       <div class="form-group" style="margin-top:16px;">
         <label>ملاحظات</label>
@@ -3465,7 +3453,7 @@ function renderProducts(catFilter = null) {
         <div class="prod-badge vat">+15%</div>
         <span class="prod-emoji">${p.emoji}</span>
         <div class="prod-name">${p.name}</div>
-        <div class="prod-price">${p.price.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+        <div class="prod-price">${p.price.toFixed(2)} <span class="sar-symbol">ر.س</span></div>
         <div class="prod-stock" style="font-size:12px;color:var(--text-muted);">
           📦 ${p.stock} &nbsp;|&nbsp; +ض: ${priceVat}
           ${p.costPrice ? '&nbsp;|&nbsp; 💰' + p.costPrice.toFixed(2) : ''}
@@ -3492,8 +3480,8 @@ function renderProductsTable() {
       <td style="font-size:20px">${p.emoji}</td>
       <td><strong>${p.name}</strong></td>
       <td>${p.cat}</td>
-      <td>${p.price.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
-      <td>${(p.price * 1.15).toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+      <td>${p.price.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
+      <td>${(p.price * 1.15).toFixed(2)} <span class="sar-symbol">ر.س</span></td>
       <td><span style="font-weight:700;color:${p.stock<10?'var(--danger)':'var(--accent)'}">${p.stock}</span></td>
       <td><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-muted)">${p.sku}</span></td>
       <td style="display:flex;gap:6px;align-items:center;">
@@ -3518,14 +3506,14 @@ function calcNewProdMargin() {
   const excl  = newVatMode === 1 ? raw / 1.15 : raw;
   const tax   = excl * 0.15;
   const incl  = excl + tax;
-  document.getElementById('newPreviewEx').innerHTML  = excl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('newPreviewTax').innerHTML = tax.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('newPreviewInc').innerHTML = incl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('newPreviewEx').innerHTML  = excl.toFixed(2)  + ' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('newPreviewTax').innerHTML = tax.toFixed(2)   + ' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('newPreviewInc').innerHTML = incl.toFixed(2)  + ' <span class="sar-symbol">ر.س</span>';
   if (cost > 0 && excl > 0) {
     const margin = ((excl - cost) / excl * 100).toFixed(1);
     const profit = (excl - cost).toFixed(2);
     document.getElementById('newProdMargin').innerHTML =
-      margin + '% &nbsp;|&nbsp; ربح: ' + profit + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+      margin + '% &nbsp;|&nbsp; ربح: ' + profit + ' <span class="sar-symbol">ر.س</span>';
     document.getElementById('newMarginRow').style.display = 'flex';
     document.getElementById('newProdMargin').style.color =
       parseFloat(margin) >= 0 ? '#2e7d32' : '#c0392b';
@@ -3588,14 +3576,14 @@ function calcEditProdMargin() {
   const excl  = editVatMode === 1 ? raw / 1.15 : raw;
   const tax   = excl * 0.15;
   const incl  = excl + tax;
-  document.getElementById('editPreviewEx').innerHTML  = excl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('editPreviewTax').innerHTML = tax.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('editPreviewInc').innerHTML = incl.toFixed(2)  + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('editPreviewEx').innerHTML  = excl.toFixed(2)  + ' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('editPreviewTax').innerHTML = tax.toFixed(2)   + ' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('editPreviewInc').innerHTML = incl.toFixed(2)  + ' <span class="sar-symbol">ر.س</span>';
   if (cost > 0 && excl > 0) {
     const margin = ((excl - cost) / excl * 100).toFixed(1);
     const profit = (excl - cost).toFixed(2);
     document.getElementById('editProdMargin').innerHTML =
-      margin + '% &nbsp;|&nbsp; ربح: ' + profit + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+      margin + '% &nbsp;|&nbsp; ربح: ' + profit + ' <span class="sar-symbol">ر.س</span>';
     document.getElementById('editMarginRow').style.display = 'flex';
     document.getElementById('editProdMargin').style.color =
       parseFloat(margin) >= 0 ? '#2e7d32' : '#c0392b';
@@ -3747,7 +3735,7 @@ function renderCart() {
       <span style="font-size:22px">${item.emoji}</span>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-price">${item.price.toFixed(2)} × ${item.qty} = ${(item.price * item.qty).toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+        <div class="cart-item-price">${item.price.toFixed(2)} × ${item.qty} = ${(item.price * item.qty).toFixed(2)} <span class="sar-symbol">ر.س</span></div>
       </div>
       <div class="qty-controls">
         <button class="qty-btn qty-minus" onclick="changeQty(${item.id},-1)">−</button>
@@ -3769,10 +3757,10 @@ function updateTotals() {
   const rate = settings.vatRate || settings.taxRate || 15;
   const vatAmt = taxable * (rate / 100);
   const grand = taxable + vatAmt;
-  document.getElementById('subtotal').innerHTML = sub.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('discountDisplay').innerHTML = disc.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('vatAmount').innerHTML = vatAmt.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('grandTotal').innerHTML = grand.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('subtotal').innerHTML = sub.toFixed(2) + ' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('discountDisplay').innerHTML = disc.toFixed(2) + ' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('vatAmount').innerHTML = vatAmt.toFixed(2) + ' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('grandTotal').innerHTML = grand.toFixed(2) + ' <span class="sar-symbol">ر.س</span>';
 }
 
 function clearCart() {
@@ -3986,27 +3974,27 @@ function showInvoiceModal(inv) {
       <table style="width:300px;border-collapse:collapse;font-size:11px;">
         <tr style="border:1px solid #d0e8dc;">
           <td style="padding:7px 12px;font-weight:700;border:1px solid #d0e8dc;">المجموع غير شامل ض.ق.م<br><span style="font-size:9px;color:#888;font-weight:400;">Total Excl. VAT</span></td>
-          <td style="padding:7px 12px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">${inv.subtotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+          <td style="padding:7px 12px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">${inv.subtotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>
         ${inv.discount>0?`<tr style="border:1px solid #d0e8dc;">
           <td style="padding:7px 12px;font-weight:700;color:#c0392b;border:1px solid #d0e8dc;">الخصم / Discount</td>
-          <td style="padding:7px 12px;text-align:left;color:#c0392b;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">- ${inv.discount.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+          <td style="padding:7px 12px;text-align:left;color:#c0392b;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">- ${inv.discount.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>`:''}
         <tr style="border:1px solid #d0e8dc;">
           <td style="padding:7px 12px;font-weight:700;border:1px solid #d0e8dc;">ضريبة القيمة المضافة ${vatPct}%<br><span style="font-size:9px;color:#888;font-weight:400;">VAT Amount</span></td>
-          <td style="padding:7px 12px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">${inv.vatAmount.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+          <td style="padding:7px 12px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">${inv.vatAmount.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>
         <tr style="background:#0A3D2E;color:white;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
           <td style="padding:9px 12px;font-weight:900;border:1px solid #0d5235;">الإجمالي شامل ض.ق.م<br><span style="font-size:9px;opacity:0.8;font-weight:400;">Total Incl. VAT</span></td>
-          <td style="padding:9px 12px;text-align:left;font-weight:900;font-size:14px;font-family:'IBM Plex Mono',monospace;border:1px solid #0d5235;">${inv.grandTotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+          <td style="padding:9px 12px;text-align:left;font-weight:900;font-size:14px;font-family:'IBM Plex Mono',monospace;border:1px solid #0d5235;">${inv.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>
         <tr style="border:1px solid #d0e8dc;background:#f5f9f7;">
           <td style="padding:7px 12px;font-weight:700;border:1px solid #d0e8dc;">المبلغ المدفوع / Paid</td>
-          <td style="padding:7px 12px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">${inv.grandTotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+          <td style="padding:7px 12px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">${inv.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>
         <tr style="border:1px solid #d0e8dc;background:#f5f9f7;">
           <td style="padding:7px 12px;font-weight:700;border:1px solid #d0e8dc;">المبلغ المتبقي / Due</td>
-          <td style="padding:7px 12px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">0.00 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+          <td style="padding:7px 12px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">0.00 <span class="sar-symbol">ر.س</span></td>
         </tr>
       </table>
     </div>
@@ -4088,8 +4076,8 @@ function generateXml(inv) {
   <cbc:IssueDate>${inv.date.split('T')[0]}</cbc:IssueDate>
   <cbc:IssueTime>${inv.date.split('T')[1].split('.')[0]}Z</cbc:IssueTime>
   <cbc:InvoiceTypeCode name="${inv.type === 'simplified' ? '0200000' : '0100000'}">${typeCode}</cbc:InvoiceTypeCode>
-  <cbc:DocumentCurrencyCode><svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></cbc:DocumentCurrencyCode>
-  <cbc:TaxCurrencyCode><svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></cbc:TaxCurrencyCode>
+  <cbc:DocumentCurrencyCode><span class="sar-symbol">ر.س</span></cbc:DocumentCurrencyCode>
+  <cbc:TaxCurrencyCode><span class="sar-symbol">ر.س</span></cbc:TaxCurrencyCode>
   <cac:AdditionalDocumentReference>
     <cbc:ID>ICV</cbc:ID><cbc:UUID>${inv.id}</cbc:UUID>
   </cac:AdditionalDocumentReference>
@@ -4222,8 +4210,8 @@ function renderInvoicesTable() {
       <td style="font-size:12px;">${inv.dateFormatted}</td>
       <td>${inv.customer?.name || '—'}</td>
       <td>${typeMap[inv.type] || inv.type}</td>
-      <td><strong>${inv.grandTotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></strong></td>
-      <td>${inv.vatAmount.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+      <td><strong>${inv.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></strong></td>
+      <td>${inv.vatAmount.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
       <td>${payMap[inv.payMethod] || inv.payMethod}</td>
       <td><span class="status-badge ${inv.status === 'sent' ? 'status-sent' : 'status-pending'}">
         ${inv.status === 'sent' ? '✓ مرسلة' : '⏳ معلقة'}
@@ -4263,7 +4251,7 @@ function renderReports() {
   document.getElementById('paymentReport').innerHTML = Object.entries(payGroups).map(([k,v]) => `
     <div style="margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;">
-        <span>${payNames[k]}</span><span>${v.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span>
+        <span>${payNames[k]}</span><span>${v.toFixed(2)} <span class="sar-symbol">ر.س</span></span>
       </div>
       <div style="background:var(--bg);border-radius:6px;height:10px;overflow:hidden;">
         <div style="background:${payColors[k]};height:100%;width:${(v/maxPay*100).toFixed(1)}%;border-radius:6px;transition:width 0.5s;"></div>
@@ -4281,7 +4269,7 @@ function renderReports() {
   document.getElementById('topProducts').innerHTML = top5.length ? top5.map(([name, val]) => `
     <div style="margin-bottom:14px;">
       <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;">
-        <span>${name}</span><span>${val.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span>
+        <span>${name}</span><span>${val.toFixed(2)} <span class="sar-symbol">ر.س</span></span>
       </div>
       <div style="background:var(--bg);border-radius:6px;height:10px;overflow:hidden;">
         <div style="background:var(--primary-light);height:100%;width:${(val/maxProd*100).toFixed(1)}%;border-radius:6px;transition:width 0.5s;"></div>
@@ -4480,9 +4468,9 @@ function renderInventoryValue() {
       <td>${p.emoji} <strong>${p.name}</strong></td>
       <td>${p.cat}</td>
       <td>${p.stock}</td>
-      <td>${cost.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
-      <td><strong>${totalC.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></strong></td>
-      <td>${p.price.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+      <td>${cost.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
+      <td><strong>${totalC.toFixed(2)} <span class="sar-symbol">ر.س</span></strong></td>
+      <td>${p.price.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
       <td><strong style="color:${marginColor}">${margin}%</strong></td>
     </tr>`;
   }).join('');
@@ -4491,8 +4479,8 @@ function renderInventoryValue() {
     <tr style="background:var(--primary);color:white;">
       <td colspan="3" style="padding:12px 16px;font-weight:700;">الإجمالي</td>
       <td style="padding:12px 16px;font-weight:700;">-</td>
-      <td style="padding:12px 16px;font-weight:900;font-family:'IBM Plex Mono',monospace;">${totalCost.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
-      <td style="padding:12px 16px;font-weight:900;font-family:'IBM Plex Mono',monospace;">${totalSell.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+      <td style="padding:12px 16px;font-weight:900;font-family:'IBM Plex Mono',monospace;">${totalCost.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
+      <td style="padding:12px 16px;font-weight:900;font-family:'IBM Plex Mono',monospace;">${totalSell.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
       <td style="padding:12px 16px;color:var(--accent);font-weight:900;">${((profit/Math.max(totalSell,1))*100).toFixed(1)}%</td>
     </tr>`;
 }
@@ -4584,7 +4572,7 @@ function renderPOList() {
       <td><strong style="font-family:'IBM Plex Mono',monospace;font-size:12px;">${po.number}</strong></td>
       <td>${sup?.name || 'غير محدد'}</td>
       <td style="font-size:12px;">${new Date(po.date).toLocaleDateString('ar-SA')}</td>
-      <td><strong>${po.total.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></strong></td>
+      <td><strong>${po.total.toFixed(2)} <span class="sar-symbol">ر.س</span></strong></td>
       <td><span class="po-status-badge ${cls}">${label}</span></td>
       <td style="display:flex;gap:6px;padding:12px 16px;">
         <button onclick="viewPO(${po.id})" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;font-family:'Cairo';font-size:11px;">👁️ عرض</button>
@@ -4621,7 +4609,7 @@ function addPOItem() {
 
 function renderPOItems() {
   const total = currentPOItems.reduce((s,i) => s + i.costPrice * i.qty, 0);
-  document.getElementById('poTotalDisplay').innerHTML = total.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('poTotalDisplay').innerHTML = total.toFixed(2) + ' <span class="sar-symbol">ر.س</span>';
   const el = document.getElementById('poItemsList');
   if (!currentPOItems.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">أضف منتجات لأمر الشراء</div>'; return; }
   el.innerHTML = currentPOItems.map((item, idx) => `
@@ -4629,7 +4617,7 @@ function renderPOItems() {
       <span style="font-size:20px">${item.emoji}</span>
       <div class="po-item-info">
         <h5>${item.name}</h5>
-        <p>سعر التكلفة: ${item.costPrice.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg> × ${item.qty} = <strong>${(item.costPrice*item.qty).toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></strong></p>
+        <p>سعر التكلفة: ${item.costPrice.toFixed(2)} <span class="sar-symbol">ر.س</span> × ${item.qty} = <strong>${(item.costPrice*item.qty).toFixed(2)} <span class="sar-symbol">ر.س</span></strong></p>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
         <button class="qty-btn qty-minus" onclick="changePOQty(${idx},-1)">−</button>
@@ -4703,14 +4691,14 @@ function viewPO(id) {
         ${po.items.map(item => `<tr>
           <td>${item.emoji} ${item.name}</td>
           <td>${item.qty}</td>
-          <td>${item.costPrice.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
-          <td><strong>${(item.costPrice*item.qty).toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></strong></td>
+          <td>${item.costPrice.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
+          <td><strong>${(item.costPrice*item.qty).toFixed(2)} <span class="sar-symbol">ر.س</span></strong></td>
         </tr>`).join('')}
       </tbody>
       <tfoot>
         <tr style="background:var(--primary);color:white;">
           <td colspan="3" style="padding:12px 16px;font-weight:700;">الإجمالي</td>
-          <td style="padding:12px 16px;font-weight:900;font-family:'IBM Plex Mono',monospace;">${po.total.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+          <td style="padding:12px 16px;font-weight:900;font-family:'IBM Plex Mono',monospace;">${po.total.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>
       </tfoot>
     </table>
@@ -4808,7 +4796,7 @@ let sysUsers = JSON.parse(localStorage.getItem('zatca_users') || 'null') || [
 let userCounter = sysUsers.length + 1;
 let activityLogs = JSON.parse(localStorage.getItem('zatca_logs') || 'null') || [
   {userId:1,action:'تسجيل دخول',detail:'تسجيل الدخول من متصفح Chrome',time:'2024-11-22 09:00',icon:'🔐',color:'rgba(0,200,150,0.12)'},
-  {userId:2,action:'إصدار فاتورة',detail:'فاتورة INV-000023 بقيمة 1,450 <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>',time:'2024-11-22 09:15',icon:'🧾',color:'rgba(10,61,46,0.08)'},
+  {userId:2,action:'إصدار فاتورة',detail:'فاتورة INV-000023 بقيمة 1,450 <span class="sar-symbol">ر.س</span>',time:'2024-11-22 09:15',icon:'🧾',color:'rgba(10,61,46,0.08)'},
   {userId:2,action:'إضافة عميل',detail:'إضافة العميل: شركة المستقبل',time:'2024-11-22 10:00',icon:'👤',color:'rgba(0,120,200,0.1)'},
   {userId:1,action:'تعديل مخزون',detail:'تعديل كمية لابتوب ديل +5',time:'2024-11-21 14:30',icon:'📦',color:'rgba(255,184,0,0.12)'},
   {userId:3,action:'تصدير تقرير',detail:'تصدير تقرير المبيعات الشهري',time:'2024-11-21 16:00',icon:'📊',color:'rgba(155,93,229,0.1)'},
@@ -4866,7 +4854,7 @@ function renderCustomers() {
       </div>
       <div class="cust-stats">
         <div class="cust-stat"><div class="cust-stat-val">${c.invoicesCount}</div><div class="cust-stat-lbl">فاتورة</div></div>
-        <div class="cust-stat"><div class="cust-stat-val">${(c.totalPurchases/1000).toFixed(1)}K</div><div class="cust-stat-lbl"><svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg> مبيعات</div></div>
+        <div class="cust-stat"><div class="cust-stat-val">${(c.totalPurchases/1000).toFixed(1)}K</div><div class="cust-stat-lbl"><span class="sar-symbol">ر.س</span> مبيعات</div></div>
         <div class="cust-stat"><div class="cust-stat-val">${c.credit>0?(c.credit/1000).toFixed(0)+'K':'—'}</div><div class="cust-stat-lbl">حد الائتمان</div></div>
       </div>
     </div>`;
@@ -4919,7 +4907,7 @@ function openCustDetail(id) {
     ? custInvs.map(inv=>`<tr>
         <td><strong style="font-family:'IBM Plex Mono',monospace;font-size:11px">${inv.number}</strong></td>
         <td style="font-size:11px">${inv.dateFormatted}</td>
-        <td><strong>${inv.grandTotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></strong></td>
+        <td><strong>${inv.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></strong></td>
         <td><span class="status-badge status-sent">✓ مرسلة</span></td>
       </tr>`)
     .join('')
@@ -5274,7 +5262,7 @@ function renderQuotationsList() {
           ${qt.status==='sent'&&daysLeft>0?`<div class="validity-bar"><div class="validity-fill" style="width:${pct}%;background:${barColor};"></div></div>`:''}
         </div>
         <div style="text-align:left;">
-          <div class="quot-card-total">${qt.grandTotal.toLocaleString('ar-SA',{minimumFractionDigits:2})} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+          <div class="quot-card-total">${qt.grandTotal.toLocaleString('ar-SA',{minimumFractionDigits:2})} <span class="sar-symbol">ر.س</span></div>
           <span class="quot-status-badge ${cls}" style="margin-top:6px;display:inline-block;">${label}</span>
         </div>
       </div>
@@ -5357,7 +5345,7 @@ function renderQuotProductsGrid() {
     <div class="product-card" onclick="addQuotProduct(${p.id})" style="padding:10px;">
       <span class="prod-emoji" style="font-size:24px;margin-bottom:6px;">${p.emoji}</span>
       <div class="prod-name" style="font-size:12px;">${p.name}</div>
-      <div class="prod-price" style="font-size:12px;">${p.price.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></div>
+      <div class="prod-price" style="font-size:12px;">${p.price.toFixed(2)} <span class="sar-symbol">ر.س</span></div>
     </div>`).join('');
 }
 
@@ -5402,9 +5390,9 @@ function renderQuotBuilderItems() {
         <h5>${item.name}</h5>
         <p style="display:flex;gap:10px;flex-wrap:wrap;">
           <span>${item.sku&&item.sku!=='CUSTOM'?item.sku:''}</span>
-          <span>قبل الضريبة: <strong>${lineNet.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></strong></span>
-          <span style="color:#00956E;font-weight:700;">ض.ق.م: ${lineVat.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span>
-          <span style="color:var(--primary);font-weight:800;">الإجمالي: ${lineTotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></span>
+          <span>قبل الضريبة: <strong>${lineNet.toFixed(2)} <span class="sar-symbol">ر.س</span></strong></span>
+          <span style="color:#00956E;font-weight:700;">ض.ق.م: ${lineVat.toFixed(2)} <span class="sar-symbol">ر.س</span></span>
+          <span style="color:var(--primary);font-weight:800;">الإجمالي: ${lineTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></span>
         </p>
       </div>
       <input class="quot-item-price-input" type="number" value="${item.price}" min="0" step="0.01"
@@ -5440,10 +5428,10 @@ function updateQuotTotals() {
   const taxable = sub - disc;
   const vat = taxable * 0.15;
   const grand = taxable + vat;
-  document.getElementById('qSubtotal').innerHTML = sub.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('qDiscount').innerHTML = disc.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('qVat').innerHTML = vat.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('qGrand').innerHTML = grand.toFixed(2)+' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('qSubtotal').innerHTML = sub.toFixed(2)+' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('qDiscount').innerHTML = disc.toFixed(2)+' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('qVat').innerHTML = vat.toFixed(2)+' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('qGrand').innerHTML = grand.toFixed(2)+' <span class="sar-symbol">ر.س</span>';
 }
 
 function saveQuotation(status) {
@@ -5585,29 +5573,29 @@ function renderQuotPreview(qt) {
             <td style="padding:11px 14px;text-align:center;font-size:13px;color:#777;font-weight:600;">${i+1}</td>
             <td style="padding:11px 14px;font-size:14px;font-weight:800;color:#111;">${item.name}</td>
             <td style="padding:11px 14px;text-align:center;font-size:14px;font-weight:800;">${item.qty}</td>
-            <td style="padding:11px 14px;text-align:left;font-size:13px;font-weight:600;font-family:'IBM Plex Mono',monospace;">${item.price.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
-            <td style="padding:11px 14px;text-align:left;font-size:13px;font-weight:600;font-family:'IBM Plex Mono',monospace;">${lineNet.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
-            <td style="padding:11px 14px;text-align:left;font-size:13px;font-weight:600;font-family:'IBM Plex Mono',monospace;">${lineVat.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
-            <td style="padding:11px 14px;text-align:left;font-size:14px;font-weight:900;font-family:'IBM Plex Mono',monospace;color:#0A3D2E;">${lineTotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+            <td style="padding:11px 14px;text-align:left;font-size:13px;font-weight:600;font-family:'IBM Plex Mono',monospace;">${item.price.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
+            <td style="padding:11px 14px;text-align:left;font-size:13px;font-weight:600;font-family:'IBM Plex Mono',monospace;">${lineNet.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
+            <td style="padding:11px 14px;text-align:left;font-size:13px;font-weight:600;font-family:'IBM Plex Mono',monospace;">${lineVat.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
+            <td style="padding:11px 14px;text-align:left;font-size:14px;font-weight:900;font-family:'IBM Plex Mono',monospace;color:#0A3D2E;">${lineTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
           </tr>`;
         }).join('')}
       </tbody>
       <tfoot>
         <tr style="background:#0A3D2E;color:white;">
           <td colspan="4" style="padding:12px 14px;font-size:13px;font-weight:700;">المجموع الكلي</td>
-          <td style="padding:12px 14px;font-size:13px;font-weight:800;text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.subtotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
-          <td style="padding:12px 14px;font-size:13px;font-weight:800;text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.vatAmount.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
-          <td style="padding:12px 14px;font-size:14px;font-weight:900;text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.grandTotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+          <td style="padding:12px 14px;font-size:13px;font-weight:800;text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.subtotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
+          <td style="padding:12px 14px;font-size:13px;font-weight:800;text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.vatAmount.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
+          <td style="padding:12px 14px;font-size:14px;font-weight:900;text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>
       </tfoot>
     </table>
 
     <div style="display:flex;justify-content:flex-end;margin-bottom:24px;">
       <table style="width:280px;">
-        <tr><td style="padding:6px 14px;font-size:13px;font-weight:600;">المجموع قبل الضريبة</td><td style="padding:6px 14px;font-size:13px;font-weight:700;text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.subtotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td></tr>
-        ${(qt.discountAmt||qt.discount)>0?`<tr><td style="padding:6px 14px;font-size:13px;color:var(--danger);font-weight:600;">الخصم</td><td style="padding:6px 14px;font-size:13px;color:var(--danger);font-weight:700;text-align:left;font-family:'IBM Plex Mono',monospace;">- ${(qt.discountAmt||(qt.discountType==='pct'?qt.subtotal*qt.discount/100:qt.discount)).toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td></tr>`:''}
-        <tr><td style="padding:6px 14px;font-size:13px;color:var(--text-muted);">ضريبة القيمة المضافة 15%</td><td style="padding:6px 14px;font-size:13px;color:var(--text-muted);text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.vatAmount.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td></tr>
-        <tr style="border-top:2px solid var(--primary);"><td style="padding:10px 14px;font-size:16px;font-weight:900;color:var(--primary);">الإجمالي المطلوب</td><td style="padding:10px 14px;font-size:16px;font-weight:900;color:var(--primary);text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.grandTotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td></tr>
+        <tr><td style="padding:6px 14px;font-size:13px;font-weight:600;">المجموع قبل الضريبة</td><td style="padding:6px 14px;font-size:13px;font-weight:700;text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.subtotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td></tr>
+        ${(qt.discountAmt||qt.discount)>0?`<tr><td style="padding:6px 14px;font-size:13px;color:var(--danger);font-weight:600;">الخصم</td><td style="padding:6px 14px;font-size:13px;color:var(--danger);font-weight:700;text-align:left;font-family:'IBM Plex Mono',monospace;">- ${(qt.discountAmt||(qt.discountType==='pct'?qt.subtotal*qt.discount/100:qt.discount)).toFixed(2)} <span class="sar-symbol">ر.س</span></td></tr>`:''}
+        <tr><td style="padding:6px 14px;font-size:13px;color:var(--text-muted);">ضريبة القيمة المضافة 15%</td><td style="padding:6px 14px;font-size:13px;color:var(--text-muted);text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.vatAmount.toFixed(2)} <span class="sar-symbol">ر.س</span></td></tr>
+        <tr style="border-top:2px solid var(--primary);"><td style="padding:10px 14px;font-size:16px;font-weight:900;color:var(--primary);">الإجمالي المطلوب</td><td style="padding:10px 14px;font-size:16px;font-weight:900;color:var(--primary);text-align:left;font-family:'IBM Plex Mono',monospace;">${qt.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td></tr>
       </table>
     </div>
 
@@ -7135,7 +7123,7 @@ function renderReturnItems() {
       <div style="flex:1;">
         <div style="font-size:13px;font-weight:800;">${item.name}</div>
         <div style="font-size:11px;color:var(--text-muted);">
-          ${item.price.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg> × متاح: ${item.available}
+          ${item.price.toFixed(2)} <span class="sar-symbol">ر.س</span> × متاح: ${item.available}
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
@@ -7163,9 +7151,9 @@ function updateReturnPreview() {
   const sub = returnItemsData.reduce((s, i) => s + i.price * i.returnQty, 0);
   const vat = sub * rate;
   const total = sub + vat;
-  document.getElementById('retPreviewSub').innerHTML   = sub.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('retPreviewVat').innerHTML   = vat.toFixed(2)   + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
-  document.getElementById('retPreviewTotal').innerHTML = total.toFixed(2) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  document.getElementById('retPreviewSub').innerHTML   = sub.toFixed(2)   + ' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('retPreviewVat').innerHTML   = vat.toFixed(2)   + ' <span class="sar-symbol">ر.س</span>';
+  document.getElementById('retPreviewTotal').innerHTML = total.toFixed(2) + ' <span class="sar-symbol">ر.س</span>';
 }
 
 document.addEventListener('change', function(e) {
@@ -7239,7 +7227,7 @@ function renderReturnsTable() {
   const c2 = document.getElementById('retTotalAmount');
   const c3 = document.getElementById('retTotalItems');
   if (c1) c1.textContent = returns.length;
-  if (c2) c2.innerHTML = totalAmt.toFixed(0) + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>';
+  if (c2) c2.innerHTML = totalAmt.toFixed(0) + ' <span class="sar-symbol">ر.س</span>';
   if (c3) c3.textContent = totalItems;
 
   const tbody = document.getElementById('returnsTable');
@@ -7255,8 +7243,8 @@ function renderReturnsTable() {
       <td>${r.dateFormatted}</td>
       <td>${r.customer?.name || '—'}</td>
       <td>${r.reason}</td>
-      <td><strong style="color:var(--danger);">${r.subtotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></strong></td>
-      <td>${r.vatAmount.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+      <td><strong style="color:var(--danger);">${r.subtotal.toFixed(2)} <span class="sar-symbol">ر.س</span></strong></td>
+      <td>${r.vatAmount.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
       <td>${r.refundMethodLabel}</td>
       <td>
         <button onclick="printReturnNote(${r.id})"
@@ -7292,16 +7280,16 @@ function printReturnNote(id) {
         ${r.items.map(i => `<tr>
           <td style="padding:7px;">${i.emoji} ${i.name}</td>
           <td style="padding:7px;text-align:center;">${i.returnQty}</td>
-          <td style="padding:7px;text-align:center;">${i.price.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
-          <td style="padding:7px;text-align:center;">${(i.price*i.returnQty).toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></td>
+          <td style="padding:7px;text-align:center;">${i.price.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
+          <td style="padding:7px;text-align:center;">${(i.price*i.returnQty).toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>`).join('')}
       </tbody>
     </table>
     <div style="text-align:left;border-top:2px solid #0A3D2E;padding-top:10px;">
-      <div>المجموع بدون ضريبة: <strong>${r.subtotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></strong></div>
-      <div>الضريبة 15%: <strong>${r.vatAmount.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg></strong></div>
+      <div>المجموع بدون ضريبة: <strong>${r.subtotal.toFixed(2)} <span class="sar-symbol">ر.س</span></strong></div>
+      <div>الضريبة 15%: <strong>${r.vatAmount.toFixed(2)} <span class="sar-symbol">ر.س</span></strong></div>
       <div style="font-size:16px;font-weight:900;color:#c0392b;margin-top:6px;">
-        إجمالي المسترد: ${r.grandTotal.toFixed(2)} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg>
+        إجمالي المسترد: ${r.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span>
       </div>
     </div>
   `;
@@ -7423,7 +7411,7 @@ function buildLabelHTML(p, sz, showName, showPrice, showSku, showComp, priceInc)
     ${showName ? `<div style="font-size:${sz.font}px;font-weight:800;margin-bottom:3px;max-width:${sz.w}px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${p.name}</div>` : ''}
     <canvas width="${sz.w}" height="${sz.h}" style="display:block;margin:0 auto;"></canvas>
     ${showSku ? `<div style="font-size:${sz.font-1}px;font-family:monospace;color:#555;margin-top:2px;">${p.sku}</div>` : ''}
-    ${showPrice ? `<div style="font-size:${sz.font+1}px;font-weight:900;color:#0A3D2E;margin-top:3px;">${priceInc} <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg> <span style=\"font-size:${sz.font-1}px;font-weight:600;color:#666;">شامل الضريبة</span></div>` : ''}
+    ${showPrice ? `<div style="font-size:${sz.font+1}px;font-weight:900;color:#0A3D2E;margin-top:3px;">${priceInc} <span class="sar-symbol">ر.س</span> <span style=\"font-size:${sz.font-1}px;font-weight:600;color:#666;">شامل الضريبة</span></div>` : ''}
   </div>`;
 }
 
@@ -7456,7 +7444,7 @@ function printBarcodeLabels() {
       + (showName ? '<div style="font-size:' + sz.font + 'px;font-weight:800;margin-bottom:3px;max-width:' + sz.w + 'px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + p.name + '</div>' : '')
       + '<img src="' + barcodeURL + '" width="' + sz.w + '" height="' + sz.h + '" style="display:block;margin:0 auto;">'
       + (showSku  ? '<div style="font-size:' + (sz.font-1) + 'px;font-family:monospace;color:#555;margin-top:2px;">' + skuText + '</div>' : '')
-      + (showPrice? '<div style="font-size:' + (sz.font+1) + 'px;font-weight:900;color:#0A3D2E;margin-top:3px;">' + priceInc + ' <svg class="sar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20"><rect x="6" y="1" width="3" height="13" rx="1"/><rect x="15" y="1" width="3" height="13" rx="1"/><rect x="4" y="4.5" width="16" height="2.5" rx="1"/><rect x="4" y="9" width="16" height="2.5" rx="1"/><rect x="4" y="13.5" width="16" height="2.5" rx="1"/></svg> <span style=\"font-size:' + (sz.font-1) + 'px;font-weight:600;color:#555;\">شامل الضريبة</span></div>' : '')
+      + (showPrice? '<div style="font-size:' + (sz.font+1) + 'px;font-weight:900;color:#0A3D2E;margin-top:3px;">' + priceInc + ' <span class="sar-symbol">ر.س</span> <span style=\"font-size:' + (sz.font-1) + 'px;font-weight:600;color:#555;\">شامل الضريبة</span></div>' : '')
       + '</div>';
   }
 
