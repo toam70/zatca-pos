@@ -6349,10 +6349,10 @@ async function doLogin() {
     page.style.transition = 'opacity 0.4s, transform 0.4s';
     page.style.opacity    = '0';
     page.style.transform  = 'scale(1.04)';
-    setTimeout(() => {
+    setTimeout(async () => {
       page.style.display = 'none';
-      reloadAppModules();
-      updateUserBadge();
+      await reloadAppModules();
+      await updateUserBadge();
       showToast('مرحباً ' + (found.icon||'👤') + ' ' + found.name + ' — ' + found.role, 'success');
     }, 400);
 
@@ -6364,13 +6364,13 @@ async function doLogin() {
   }
 }
 
-function reloadAppModules() {
+async function reloadAppModules() {
   invoices       = JSON.parse(localStorage.getItem('zatca_invoices') || '[]');
   returns        = JSON.parse(localStorage.getItem('zatca_returns')  || '[]');
   returnCounter  = returns.length + 1;
   products       = JSON.parse(localStorage.getItem('zatca_products') || 'null') || [];
   settings       = JSON.parse(localStorage.getItem('zatca_settings') || 'null') || defaultSettings();
-  syncSettingsFromTenant();
+  await syncSettingsFromTenant();
   stockMovements = JSON.parse(localStorage.getItem('zatca_movements') || '[]');
   suppliers      = JSON.parse(localStorage.getItem('zatca_suppliers') || '[]');
   purchaseOrders = JSON.parse(localStorage.getItem('zatca_po') || '[]');
@@ -6410,13 +6410,13 @@ async function syncSettingsFromTenant() {
   try {
     const tenant = await masterGetTenant(currentTenantId);
     if (!tenant) return;
-    let changed = false;
-    if (!settings.companyNameAr && tenant.name)  { settings.companyNameAr = tenant.name;  changed = true; }
-    if (!settings.vatNumber && tenant.vat)       { settings.vatNumber = tenant.vat;       changed = true; }
-    if (!settings.crNumber && tenant.cr)         { settings.crNumber = tenant.cr;         changed = true; }
-    if (!settings.city && tenant.city)           { settings.city = tenant.city;           changed = true; }
-    if (!settings.companyNameEn && tenant.nameEn){ settings.companyNameEn = tenant.nameEn; changed = true; }
-    if (changed) localStorage.setItem('zatca_settings', JSON.stringify(settings));
+    // دائماً نأخذ البيانات الأساسية من المؤسسة الحالية
+    settings.companyNameAr = tenant.name  || settings.companyNameAr || '';
+    settings.companyNameEn = tenant.nameEn || settings.companyNameEn || '';
+    settings.vatNumber     = tenant.vat   || settings.vatNumber || '';
+    settings.crNumber      = tenant.cr    || settings.crNumber || '';
+    settings.city          = tenant.city  || settings.city || '';
+    localStorage.setItem('zatca_settings', JSON.stringify(settings));
   } catch(e) {}
 }
 
@@ -6846,8 +6846,8 @@ function switchStep() {}
     await openTenantDB(currentTenantId);
     await loadAllTenantData();
     document.getElementById('loginPage').style.display = 'none';
-    reloadAppModules();
-    updateUserBadge();
+    await reloadAppModules();
+    await updateUserBadge();
   } else {
     // تحديد الشركة من URL — أو أول شركة نشطة إن لم يُحدد
     let tid = tenantIdFromURL;
