@@ -2217,6 +2217,36 @@
               <div id="view_address" style="font-size:14px;font-weight:800;">—</div>
             </div>
 
+            <!-- بطاقة الاشتراك -->
+            <div id="subscriptionCard" style="margin-top:18px;border:2px solid #6c5ce7;border-radius:12px;overflow:hidden;display:none;">
+              <div style="background:#6c5ce7;color:white;padding:10px 16px;font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">📋</span> حالة الاشتراك
+              </div>
+              <div style="padding:16px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center;">
+                  <div style="background:var(--bg);border-radius:10px;padding:14px 10px;">
+                    <div style="font-size:11px;color:var(--text-muted);font-weight:700;margin-bottom:4px;">تاريخ البداية</div>
+                    <div id="sub_startDate" style="font-size:14px;font-weight:800;">—</div>
+                  </div>
+                  <div style="background:var(--bg);border-radius:10px;padding:14px 10px;">
+                    <div style="font-size:11px;color:var(--text-muted);font-weight:700;margin-bottom:4px;">تاريخ الانتهاء</div>
+                    <div id="sub_endDate" style="font-size:14px;font-weight:800;">—</div>
+                  </div>
+                  <div style="background:var(--bg);border-radius:10px;padding:14px 10px;">
+                    <div style="font-size:11px;color:var(--text-muted);font-weight:700;margin-bottom:4px;">مدة الاشتراك</div>
+                    <div id="sub_duration" style="font-size:14px;font-weight:800;">—</div>
+                  </div>
+                </div>
+                <div id="sub_remainingBox" style="margin-top:14px;border-radius:10px;padding:16px;text-align:center;">
+                  <div style="font-size:12px;font-weight:700;margin-bottom:6px;">المتبقي من الاشتراك</div>
+                  <div id="sub_remaining" style="font-size:28px;font-weight:900;"></div>
+                  <div id="sub_bar" style="margin-top:10px;background:#e0e0e0;border-radius:8px;height:10px;overflow:hidden;">
+                    <div id="sub_barFill" style="height:100%;border-radius:8px;transition:width 0.5s;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -4276,7 +4306,7 @@ function renderReports() {
 }
 
 // ===== SETTINGS =====
-function populateSettingsView() {
+async function populateSettingsView() {
   const viewFields = ['companyNameAr','companyNameEn','vatNumber','crNumber','city','zipCode','address'];
   viewFields.forEach(f => {
     const hidden = document.getElementById(f);
@@ -4284,6 +4314,71 @@ function populateSettingsView() {
     if (hidden) hidden.value = settings[f] || '';
     if (view)   view.textContent = settings[f] || '—';
   });
+
+  // تحميل بيانات الاشتراك
+  if (currentTenantId && masterDB) {
+    try {
+      const tenant = await masterGetTenant(currentTenantId);
+      if (tenant && tenant.subscriptionStart && tenant.subscriptionMonths) {
+        const card = document.getElementById('subscriptionCard');
+        card.style.display = 'block';
+
+        const start = new Date(tenant.subscriptionStart);
+        const end = new Date(start);
+        end.setMonth(end.getMonth() + tenant.subscriptionMonths);
+        const now = new Date();
+        const totalMs = end - start;
+        const elapsedMs = now - start;
+        const remainMs = end - now;
+        const remainDays = Math.ceil(remainMs / (1000*60*60*24));
+
+        document.getElementById('sub_startDate').textContent = start.toLocaleDateString('ar-SA');
+        document.getElementById('sub_endDate').textContent = end.toLocaleDateString('ar-SA');
+        document.getElementById('sub_duration').textContent = tenant.subscriptionMonths + ' شهر';
+
+        const box = document.getElementById('sub_remainingBox');
+        const remEl = document.getElementById('sub_remaining');
+        const barFill = document.getElementById('sub_barFill');
+        const pct = Math.max(0, Math.min(100, (remainMs / totalMs) * 100));
+
+        if (remainDays <= 0) {
+          box.style.background = '#fde8e4';
+          remEl.style.color = '#e17055';
+          remEl.textContent = 'منتهي';
+          barFill.style.width = '0%';
+          barFill.style.background = '#e17055';
+          card.style.borderColor = '#e17055';
+        } else if (remainDays <= 7) {
+          const m = Math.floor(remainDays / 30); const d = remainDays % 30;
+          box.style.background = '#fde8e4';
+          remEl.style.color = '#e17055';
+          remEl.textContent = (m > 0 ? m + ' شهر و ' : '') + d + ' يوم';
+          barFill.style.width = pct + '%';
+          barFill.style.background = '#e17055';
+          card.style.borderColor = '#e17055';
+        } else if (remainDays <= 30) {
+          const m = Math.floor(remainDays / 30); const d = remainDays % 30;
+          box.style.background = '#fef9e7';
+          remEl.style.color = '#f39c12';
+          remEl.textContent = (m > 0 ? m + ' شهر و ' : '') + d + ' يوم';
+          barFill.style.width = pct + '%';
+          barFill.style.background = '#f39c12';
+          card.style.borderColor = '#f39c12';
+        } else {
+          const m = Math.floor(remainDays / 30); const d = remainDays % 30;
+          box.style.background = '#e8f8f5';
+          remEl.style.color = '#00b894';
+          let txt = '';
+          if (m > 0) txt += m + ' شهر';
+          if (d > 0) txt += (m > 0 ? ' و ' : '') + d + ' يوم';
+          remEl.textContent = txt || 'أقل من يوم';
+          barFill.style.width = pct + '%';
+          barFill.style.background = '#00b894';
+          card.style.borderColor = '#6c5ce7';
+        }
+      }
+    } catch(e) { /* ignore */ }
+  }
 }
 
 function showSettingsSection(el, sec) {
