@@ -6351,8 +6351,8 @@ async function doLogin() {
     page.style.transform  = 'scale(1.04)';
     setTimeout(() => {
       page.style.display = 'none';
-      updateUserBadge();
       reloadAppModules();
+      updateUserBadge();
       showToast('مرحباً ' + (found.icon||'👤') + ' ' + found.name + ' — ' + found.role, 'success');
     }, 400);
 
@@ -6732,16 +6732,28 @@ function backToVatStep() {
   }, 250);
 }
 
-function updateUserBadge() {
+async function updateUserBadge() {
   if (!currentLoginUser) return;
 
-  // اسم المؤسسة في الهيدر
+  // اسم المؤسسة في الهيدر — نأخذه من tenant مباشرة كاحتياط
   const nameEl = document.getElementById('headerCompanyName');
   const subEl  = document.getElementById('headerCompanySub');
-  const companyName = (settings && settings.companyNameAr) || currentLoginUser.tenantName || '';
+  let companyName = (settings && settings.companyNameAr) || '';
+  let vatNum = (settings && settings.vatNumber) || '';
+
+  if ((!companyName || !vatNum) && currentTenantId && masterDB) {
+    try {
+      const tenant = await masterGetTenant(currentTenantId);
+      if (tenant) {
+        if (!companyName) companyName = tenant.name || '';
+        if (!vatNum) vatNum = tenant.vat || '';
+      }
+    } catch(e) {}
+  }
+  companyName = companyName || currentLoginUser.tenantName || '';
   if (nameEl) nameEl.textContent = companyName;
-  if (subEl)  subEl.textContent  = (settings && settings.vatNumber)
-    ? 'الرقم الضريبي: ' + settings.vatNumber
+  if (subEl)  subEl.textContent  = vatNum
+    ? 'الرقم الضريبي: ' + vatNum
     : 'مرتبط بهيئة الزكاة والضريبة والجمارك';
 
   // بادج المستخدم — اسم المستخدم فقط
@@ -6813,8 +6825,8 @@ function switchStep() {}
     await openTenantDB(currentTenantId);
     await loadAllTenantData();
     document.getElementById('loginPage').style.display = 'none';
-    updateUserBadge();
     reloadAppModules();
+    updateUserBadge();
   } else {
     // تحديد الشركة من URL — أو أول شركة نشطة إن لم يُحدد
     let tid = tenantIdFromURL;
