@@ -1603,6 +1603,27 @@
           <label class="sa-form-label">الهاتف</label>
           <input class="sa-form-input" id="sa_phone" placeholder="0500000000" dir="ltr">
         </div>
+        <div class="sa-form-group">
+          <label class="sa-form-label">مدة الاشتراك *</label>
+          <select class="sa-form-input" id="sa_subMonths" style="cursor:pointer;">
+            <option value="1">شهر واحد</option>
+            <option value="2">شهرين</option>
+            <option value="3">3 شهور</option>
+            <option value="4">4 شهور</option>
+            <option value="5">5 شهور</option>
+            <option value="6">6 شهور</option>
+            <option value="7">7 شهور</option>
+            <option value="8">8 شهور</option>
+            <option value="9">9 شهور</option>
+            <option value="10">10 شهور</option>
+            <option value="11">11 شهر</option>
+            <option value="12" selected>12 شهر (سنة)</option>
+          </select>
+        </div>
+        <div class="sa-form-group">
+          <label class="sa-form-label">تاريخ بداية الاشتراك</label>
+          <input class="sa-form-input" id="sa_subStart" type="date" dir="ltr">
+        </div>
       </div>
       <div style="border-top:1px solid rgba(255,255,255,0.07);margin-top:16px;padding-top:16px;">
         <div style="font-size:12px;font-weight:800;color:#1a1a2e;margin-bottom:12px;">👤 حساب المدير</div>
@@ -6724,11 +6745,11 @@ async function seedDefaultTenants() {
   const existing = await masterGetAllTenants();
   if (existing.length) return;
   const defaults = [
-    { id:'tenant_1', name:'شركة النجم التجارية',  nameEn:'Al Najm Trading Co.',  vat:'310000000000001', cr:'1010000001', city:'الرياض', logo:'⭐', color:'#0A3D2E', active:true, createdAt:new Date().toISOString(),
+    { id:'tenant_1', name:'شركة النجم التجارية',  nameEn:'Al Najm Trading Co.',  vat:'310000000000001', cr:'1010000001', city:'الرياض', logo:'⭐', color:'#0A3D2E', active:true, createdAt:new Date().toISOString(), subscriptionMonths:12, subscriptionStart:new Date().toISOString().split('T')[0],
       users:[{username:'admin',password:'admin123',name:'مدير النجم', role:'مدير',icon:'👑'},{username:'cashier',password:'cash123',name:'كاشير',role:'كاشير',icon:'🛒'}] },
-    { id:'tenant_2', name:'مؤسسة الفجر للتجارة', nameEn:'Al Fajr Trading Est.',  vat:'310000000000002', cr:'1010000002', city:'جدة',    logo:'🌅', color:'#1a3d6b', active:true, createdAt:new Date().toISOString(),
+    { id:'tenant_2', name:'مؤسسة الفجر للتجارة', nameEn:'Al Fajr Trading Est.',  vat:'310000000000002', cr:'1010000002', city:'جدة',    logo:'🌅', color:'#1a3d6b', active:true, createdAt:new Date().toISOString(), subscriptionMonths:6, subscriptionStart:new Date().toISOString().split('T')[0],
       users:[{username:'admin',password:'fajr@123',name:'مدير الفجر',role:'مدير',icon:'👑'}] },
-    { id:'tenant_3', name:'شركة الواحة الذهبية',  nameEn:'Al Waha Golden Co.',   vat:'310000000000003', cr:'1010000003', city:'الدمام', logo:'🏜️', color:'#6b3d0a', active:true, createdAt:new Date().toISOString(),
+    { id:'tenant_3', name:'شركة الواحة الذهبية',  nameEn:'Al Waha Golden Co.',   vat:'310000000000003', cr:'1010000003', city:'الدمام', logo:'🏜️', color:'#6b3d0a', active:true, createdAt:new Date().toISOString(), subscriptionMonths:3, subscriptionStart:new Date().toISOString().split('T')[0],
       users:[{username:'admin',password:'waha@456',name:'مدير الواحة',role:'مدير',icon:'👑'}] },
   ];
   for (const t of defaults) await masterPutTenant(t);
@@ -6792,6 +6813,8 @@ async function saRenderAll() {
 
 function saRenderStats(tenants) {
   const active = tenants.filter(t => t.active).length;
+  const expiredCount = tenants.filter(t => { const s = saCalcSubscription(t); return s && s.expired; }).length;
+  const soonExpire = tenants.filter(t => { const s = saCalcSubscription(t); return s && !s.expired && s.totalDays <= 30; }).length;
   document.getElementById('saStats').innerHTML = `
     <div class="sa-stat">
       <div class="sa-stat-icon">🏢</div>
@@ -6804,9 +6827,14 @@ function saRenderStats(tenants) {
       <div class="sa-stat-lbl">مؤسسات نشطة</div>
     </div>
     <div class="sa-stat">
-      <div class="sa-stat-icon">⛔</div>
-      <div class="sa-stat-val" style="color:#e17055;">${tenants.length - active}</div>
-      <div class="sa-stat-lbl">معطلة</div>
+      <div class="sa-stat-icon">⏰</div>
+      <div class="sa-stat-val" style="color:#fdcb6e;">${soonExpire}</div>
+      <div class="sa-stat-lbl">قاربت على الانتهاء</div>
+    </div>
+    <div class="sa-stat">
+      <div class="sa-stat-icon">🚫</div>
+      <div class="sa-stat-val" style="color:#e17055;">${expiredCount}</div>
+      <div class="sa-stat-lbl">اشتراك منتهي</div>
     </div>
     <div class="sa-stat">
       <div class="sa-stat-icon">👥</div>
@@ -6834,6 +6862,7 @@ async function saRenderTenants(tenants) {
             <span class="sa-badge ${t.active?'sa-badge-on':'sa-badge-off'}">${t.active?'✓ نشطة':'معطلة'}</span>
           </div>
           <div class="sa-tenant-meta">VAT: ${t.vat} &nbsp;|&nbsp; 📍 ${t.city||''} &nbsp;|&nbsp; 👥 ${t.users?.length||0} مستخدم</div>
+          <div class="sa-tenant-meta" style="margin-top:4px;display:flex;align-items:center;gap:6px;">📅 الاشتراك: ${t.subscriptionMonths||'-'} شهر &nbsp; ${saSubBadge(t)}</div>
           <div class="sa-tenant-meta" style="margin-top:3px;color:#6c5ce7;">🔗 ?tenant=${t.id}</div>
         </div>
       </div>
@@ -6850,6 +6879,35 @@ async function saRenderTenants(tenants) {
       </div>`;
     el.appendChild(card);
   }
+}
+
+// ── Subscription Helpers ──
+function saCalcSubscription(t) {
+  if (!t.subscriptionStart || !t.subscriptionMonths) return null;
+  const start = new Date(t.subscriptionStart);
+  const end = new Date(start);
+  end.setMonth(end.getMonth() + t.subscriptionMonths);
+  const now = new Date();
+  const diffMs = end - now;
+  const totalDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  if (totalDays <= 0) return { expired: true, days: 0, months: 0, endDate: end };
+  const months = Math.floor(totalDays / 30);
+  const days = totalDays % 30;
+  return { expired: false, days, months, totalDays, endDate: end };
+}
+
+function saSubBadge(t) {
+  const sub = saCalcSubscription(t);
+  if (!sub) return '<span style="font-size:10px;color:#6b7280;">بدون اشتراك</span>';
+  if (sub.expired) return '<span style="display:inline-block;background:#e17055;color:white;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">منتهي</span>';
+  let color = '#00b894';
+  if (sub.totalDays <= 7) color = '#e17055';
+  else if (sub.totalDays <= 30) color = '#fdcb6e';
+  let text = '';
+  if (sub.months > 0) text += `${sub.months} شهر `;
+  if (sub.days > 0) text += `${sub.days} يوم`;
+  if (!text) text = 'أقل من يوم';
+  return `<span style="display:inline-block;background:${color}20;color:${color};border:1px solid ${color}50;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">متبقي ${text}</span>`;
 }
 
 // ── Color Picker ──
@@ -6894,6 +6952,8 @@ function saOpenAddModal() {
   });
   document.getElementById('sa_logo').value = '🏢';
   document.getElementById('sa_adminUser').value = 'admin';
+  document.getElementById('sa_subMonths').value = '12';
+  document.getElementById('sa_subStart').value = new Date().toISOString().split('T')[0];
   document.getElementById('saModalErr').style.display = 'none';
   saRenderColors(null);
   document.getElementById('saModal').classList.add('open');
@@ -6911,6 +6971,8 @@ async function saEditTenant(id) {
   document.getElementById('sa_city').value    = t.city    || '';
   document.getElementById('sa_phone').value   = t.phone   || '';
   document.getElementById('sa_logo').value    = t.logo    || '🏢';
+  document.getElementById('sa_subMonths').value = String(t.subscriptionMonths || 12);
+  document.getElementById('sa_subStart').value  = t.subscriptionStart ? t.subscriptionStart.split('T')[0] : new Date().toISOString().split('T')[0];
   const admin = t.users?.find(u => u.role === 'مدير') || t.users?.[0] || {};
   document.getElementById('sa_adminUser').value = admin.username || 'admin';
   document.getElementById('sa_adminPass').value = admin.password || '';
@@ -6944,6 +7006,9 @@ async function saSaveTenant() {
     role: 'مدير', icon: '👑'
   };
 
+  const subMonths = parseInt(document.getElementById('sa_subMonths').value) || 12;
+  const subStart  = document.getElementById('sa_subStart').value || new Date().toISOString().split('T')[0];
+
   if (editId) {
     const t = tenants.find(x => x.id === editId);
     t.name  = name;
@@ -6953,6 +7018,8 @@ async function saSaveTenant() {
     t.phone = document.getElementById('sa_phone').value.trim();
     t.logo  = document.getElementById('sa_logo').value.trim() || '🏢';
     t.color = saColor;
+    t.subscriptionMonths = subMonths;
+    t.subscriptionStart  = subStart;
     if (!t.users) t.users = [];
     const idx = t.users.findIndex(u => u.role === 'مدير');
     if (idx > -1) t.users[idx] = adminObj; else t.users.unshift(adminObj);
@@ -6969,6 +7036,8 @@ async function saSaveTenant() {
       color:     saColor,
       active:    true,
       createdAt: new Date().toISOString(),
+      subscriptionMonths: subMonths,
+      subscriptionStart:  subStart,
       users:     [adminObj]
     };
     await masterPutTenant(newT);
