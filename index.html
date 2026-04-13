@@ -6370,6 +6370,7 @@ function reloadAppModules() {
   returnCounter  = returns.length + 1;
   products       = JSON.parse(localStorage.getItem('zatca_products') || 'null') || [];
   settings       = JSON.parse(localStorage.getItem('zatca_settings') || 'null') || defaultSettings();
+  syncSettingsFromTenant();
   stockMovements = JSON.parse(localStorage.getItem('zatca_movements') || '[]');
   suppliers      = JSON.parse(localStorage.getItem('zatca_suppliers') || '[]');
   purchaseOrders = JSON.parse(localStorage.getItem('zatca_po') || '[]');
@@ -6396,7 +6397,27 @@ function reloadAppModules() {
 }
 
 function defaultSettings() {
-  return { companyNameAr:'شركة النجم التجارية', companyNameEn:'Al Najm Trading', vatNumber:'310000000000001', crNumber:'1010000001', city:'الرياض', zipCode:'12345', address:'طريق الملك فهد', taxRate:15, vatRate:15 };
+  const base = { companyNameAr:'', companyNameEn:'', vatNumber:'', crNumber:'', city:'', zipCode:'', address:'', taxRate:15, vatRate:15 };
+  // تعبئة من بيانات المؤسسة الحالية إذا وُجدت
+  if (currentLoginUser) {
+    base.companyNameAr = currentLoginUser.tenantName || '';
+  }
+  return base;
+}
+
+async function syncSettingsFromTenant() {
+  if (!currentTenantId || !masterDB) return;
+  try {
+    const tenant = await masterGetTenant(currentTenantId);
+    if (!tenant) return;
+    let changed = false;
+    if (!settings.companyNameAr && tenant.name)  { settings.companyNameAr = tenant.name;  changed = true; }
+    if (!settings.vatNumber && tenant.vat)       { settings.vatNumber = tenant.vat;       changed = true; }
+    if (!settings.crNumber && tenant.cr)         { settings.crNumber = tenant.cr;         changed = true; }
+    if (!settings.city && tenant.city)           { settings.city = tenant.city;           changed = true; }
+    if (!settings.companyNameEn && tenant.nameEn){ settings.companyNameEn = tenant.nameEn; changed = true; }
+    if (changed) localStorage.setItem('zatca_settings', JSON.stringify(settings));
+  } catch(e) {}
 }
 
 
