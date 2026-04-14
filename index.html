@@ -3965,118 +3965,125 @@ function buildInvoiceHTML(inv, tmpl) {
   }
 
   // ══════ A4 (عربي أو ثنائي) ══════
+  const L = (ar,en) => bi ? ar+' / '+en : ar;
   return `
-  <div style="font-family:Cairo,Arial,sans-serif;direction:rtl;color:#111;background:white;padding:30px 40px;max-width:794px;margin:0 auto;min-height:1100px;display:flex;flex-direction:column;">
+  <div style="font-family:Cairo,Arial,sans-serif;direction:rtl;color:#222;background:white;padding:0;max-width:794px;margin:0 auto;min-height:1120px;display:flex;flex-direction:column;">
 
-    <!-- ══ رأس ══ -->
-    <div style="display:flex;align-items:center;padding-bottom:16px;border-bottom:3px solid #0A3D2E;margin-bottom:20px;">
+    <!-- ══ شريط علوي ══ -->
+    <div style="background:#0A3D2E;color:white;padding:18px 32px;display:flex;align-items:center;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
       <div style="flex:1;">
-        <div style="font-size:24px;font-weight:900;color:#0A3D2E;">${settings.companyNameAr}</div>
-        ${bi?`<div style="font-size:14px;color:#555;margin-top:2px;">${settings.companyNameEn||''}</div>`:''}
-        <div style="font-size:12px;color:#666;margin-top:8px;line-height:1.8;">
-          الرقم الضريبي: <strong>${settings.vatNumber}</strong>${bi?`<br>VAT No.: <strong>${settings.vatNumber}</strong>`:''}<br>
-          س.ت: ${settings.crNumber} | ${settings.city} - ${settings.address||''}
-        </div>
+        <div style="font-size:26px;font-weight:900;letter-spacing:0.5px;">${settings.companyNameAr}</div>
+        ${bi?`<div style="font-size:13px;opacity:0.85;margin-top:2px;font-weight:600;">${settings.companyNameEn||''}</div>`:''}
       </div>
-      <div style="flex-shrink:0;text-align:center;margin:0 24px;">
-        <div id="qrCode${inv.id}" style="width:110px;height:110px;"></div>
-      </div>
-      <div style="flex:1;text-align:left;">
-        ${bi?`<div style="font-size:20px;font-weight:900;color:#0A3D2E;">${typeMapEn[inv.type]||'Tax Invoice'}</div>`:''}
-        <div style="font-size:${bi?'16':'20'}px;font-weight:${bi?'800':'900'};color:${bi?'#333':'#0A3D2E'};">${typeMapAr[inv.type]||'فاتورة ضريبية'}</div>
-        <div style="margin-top:10px;background:#f5f9f7;border:1px solid #d0e8dc;border-radius:8px;padding:10px 14px;">
-          <div style="font-size:11px;color:#888;">رقم الفاتورة${bi?' / Invoice No.':''}</div>
-          <div style="font-size:15px;font-weight:900;color:#0A3D2E;font-family:'IBM Plex Mono',monospace;">${inv.number}</div>
-          <div style="font-size:11px;color:#888;margin-top:6px;">التاريخ${bi?' / Date':''}</div>
-          <div style="font-size:13px;font-weight:700;">${inv.dateFormatted}</div>
-        </div>
+      <div style="text-align:left;">
+        <div style="font-size:22px;font-weight:900;">${bi?(typeMapEn[inv.type]||'Tax Invoice'):(typeMapAr[inv.type]||'فاتورة ضريبية')}</div>
+        ${bi?`<div style="font-size:14px;opacity:0.85;margin-top:2px;">${typeMapAr[inv.type]||'فاتورة ضريبية'}</div>`:''}
       </div>
     </div>
 
-    <!-- ══ بيانات البائع والمشتري ══ -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
-      <div style="border:1px solid #d0e8dc;border-radius:8px;overflow:hidden;">
-        <div style="background:#0A3D2E;color:white;padding:8px 14px;font-size:12px;font-weight:800;display:flex;justify-content:space-between;">
-          <span>بيانات البائع</span>${bi?'<span>Seller Details</span>':''}
+    <div style="padding:24px 32px;flex:1;display:flex;flex-direction:column;">
+
+      <!-- ══ رقم + تاريخ + QR ══ -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;padding-bottom:18px;border-bottom:2px solid #e8efe9;">
+        <div style="display:flex;gap:32px;">
+          <div>
+            <div style="font-size:11px;color:#888;font-weight:700;">${L('رقم الفاتورة','Invoice No.')}</div>
+            <div style="font-size:18px;font-weight:900;color:#0A3D2E;font-family:'IBM Plex Mono',monospace;margin-top:2px;">${inv.number}</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:#888;font-weight:700;">${L('التاريخ','Date')}</div>
+            <div style="font-size:14px;font-weight:700;margin-top:2px;">${inv.dateFormatted}</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:#888;font-weight:700;">${L('طريقة الدفع','Payment')}</div>
+            <div style="font-size:14px;font-weight:700;margin-top:2px;">${payMapAr[inv.payMethod]||inv.payMethod}</div>
+          </div>
         </div>
-        <div style="padding:10px 14px;font-size:12px;line-height:2;">
-          <div><span style="color:#888;">الاسم${bi?' / Name':''}:</span> <strong>${settings.companyNameAr}</strong></div>
-          <div><span style="color:#888;">الرقم الضريبي${bi?' / VAT No.':''}:</span> <strong style="font-family:'IBM Plex Mono',monospace;">${settings.vatNumber}</strong></div>
-          <div><span style="color:#888;">السجل التجاري${bi?' / CR':''}:</span> <strong style="font-family:'IBM Plex Mono',monospace;">${settings.crNumber}</strong></div>
-          <div><span style="color:#888;">العنوان${bi?' / Address':''}:</span> ${settings.city}${settings.address?'، '+settings.address:''}</div>
+        <div id="qrCode${inv.id}" style="width:90px;height:90px;flex-shrink:0;"></div>
+      </div>
+
+      <!-- ══ بيانات البائع والمشتري ══ -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px;">
+        <div style="background:#f7faf8;border:1px solid #d6e8dc;border-radius:10px;padding:14px 18px;">
+          <div style="font-size:12px;font-weight:900;color:#0A3D2E;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #0A3D2E;">${L('البائع','Seller')}</div>
+          <table style="width:100%;border:none;font-size:12px;">
+            <tr><td style="border:none;padding:3px 0;color:#888;width:110px;">${L('الاسم','Name')}</td><td style="border:none;padding:3px 0;font-weight:700;">${settings.companyNameAr}</td></tr>
+            <tr><td style="border:none;padding:3px 0;color:#888;">${L('الرقم الضريبي','VAT No.')}</td><td style="border:none;padding:3px 0;font-weight:700;font-family:'IBM Plex Mono',monospace;">${settings.vatNumber}</td></tr>
+            <tr><td style="border:none;padding:3px 0;color:#888;">${L('السجل التجاري','CR')}</td><td style="border:none;padding:3px 0;font-weight:700;font-family:'IBM Plex Mono',monospace;">${settings.crNumber}</td></tr>
+            <tr><td style="border:none;padding:3px 0;color:#888;">${L('العنوان','Address')}</td><td style="border:none;padding:3px 0;">${settings.city}${settings.address?'، '+settings.address:''}</td></tr>
+          </table>
+        </div>
+        <div style="background:#f7faf8;border:1px solid #d6e8dc;border-radius:10px;padding:14px 18px;">
+          <div style="font-size:12px;font-weight:900;color:#0A3D2E;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #0A3D2E;">${L('المشتري','Buyer')}</div>
+          <table style="width:100%;border:none;font-size:12px;">
+            <tr><td style="border:none;padding:3px 0;color:#888;width:110px;">${L('الاسم','Name')}</td><td style="border:none;padding:3px 0;font-weight:700;">${inv.customer.name||'عميل نقدي'}</td></tr>
+            <tr><td style="border:none;padding:3px 0;color:#888;">${L('الرقم الضريبي','VAT No.')}</td><td style="border:none;padding:3px 0;font-weight:700;font-family:'IBM Plex Mono',monospace;">${inv.customer.vat||'—'}</td></tr>
+            <tr><td style="border:none;padding:3px 0;color:#888;">${L('الجوال','Mobile')}</td><td style="border:none;padding:3px 0;">${inv.customer.phone||'—'}</td></tr>
+            <tr><td style="border:none;padding:3px 0;color:#888;">${L('السجل التجاري','CR')}</td><td style="border:none;padding:3px 0;font-family:'IBM Plex Mono',monospace;">${inv.customer.cr||'—'}</td></tr>
+          </table>
         </div>
       </div>
-      <div style="border:1px solid #d0e8dc;border-radius:8px;overflow:hidden;">
-        <div style="background:#0A3D2E;color:white;padding:8px 14px;font-size:12px;font-weight:800;display:flex;justify-content:space-between;">
-          <span>بيانات المشتري</span>${bi?'<span>Buyer Details</span>':''}
-        </div>
-        <div style="padding:10px 14px;font-size:12px;line-height:2;">
-          <div><span style="color:#888;">الاسم${bi?' / Name':''}:</span> <strong>${inv.customer.name||'عميل نقدي'}</strong></div>
-          <div><span style="color:#888;">الرقم الضريبي${bi?' / VAT No.':''}:</span> <strong style="font-family:'IBM Plex Mono',monospace;">${inv.customer.vat||'—'}</strong></div>
-          <div><span style="color:#888;">الجوال${bi?' / Mobile':''}:</span> ${inv.customer.phone||'—'}</div>
-          <div><span style="color:#888;">طريقة الدفع${bi?' / Payment':''}:</span> ${payMapAr[inv.payMethod]||inv.payMethod}</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- ══ جدول البنود ══ -->
-    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;flex:1;">
-      <thead>
-        <tr style="background:#0A3D2E;color:white;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
-          <th style="padding:10px 12px;text-align:center;width:36px;border:1px solid #0d5235;">م</th>
-          <th style="padding:10px 12px;text-align:right;border:1px solid #0d5235;">وصف السلعة${bi?'<br><span style="font-size:9px;opacity:0.8;">Description</span>':''}</th>
-          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">الكمية${bi?'<br><span style="font-size:9px;opacity:0.8;">Qty</span>':''}</th>
-          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">سعر الوحدة${bi?'<br><span style="font-size:9px;opacity:0.8;">Unit Price</span>':''}</th>
-          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">ض.ق.م ${vatPct}%${bi?'<br><span style="font-size:9px;opacity:0.8;">VAT</span>':''}</th>
-          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">الإجمالي${bi?'<br><span style="font-size:9px;opacity:0.8;">Total</span>':''}</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${inv.items.map((item,i)=>{
-          const taxable   = item.price * item.qty;
-          const lineVat   = taxable * rate;
-          const lineTotal = taxable + lineVat;
-          const bg = i%2===0 ? '#fff' : '#f5f9f7';
-          return `<tr style="background:${bg};-webkit-print-color-adjust:exact;print-color-adjust:exact;">
-            <td style="padding:9px 12px;text-align:center;border:1px solid #e0e8e4;color:#888;">${i+1}</td>
-            <td style="padding:9px 12px;border:1px solid #e0e8e4;font-weight:700;">${item.name}</td>
-            <td style="padding:9px 12px;text-align:center;border:1px solid #e0e8e4;font-weight:700;">${item.qty}</td>
-            <td style="padding:9px 12px;text-align:center;border:1px solid #e0e8e4;font-family:'IBM Plex Mono',monospace;">${item.price.toFixed(2)}</td>
-            <td style="padding:9px 12px;text-align:center;border:1px solid #e0e8e4;font-family:'IBM Plex Mono',monospace;">${lineVat.toFixed(2)}</td>
-            <td style="padding:9px 12px;text-align:center;border:1px solid #e0e8e4;font-weight:800;font-family:'IBM Plex Mono',monospace;">${lineTotal.toFixed(2)}</td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>
-
-    <!-- ══ الإجماليات ══ -->
-    <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
-      <table style="width:340px;border-collapse:collapse;font-size:13px;">
-        <tr style="border:1px solid #d0e8dc;">
-          <td style="padding:9px 14px;font-weight:700;border:1px solid #d0e8dc;">المجموع بدون ضريبة${bi?'<br><span style="font-size:9px;color:#888;">Total Excl. VAT</span>':''}</td>
-          <td style="padding:9px 14px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">${inv.subtotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
-        </tr>
-        ${inv.discount>0?`<tr style="border:1px solid #d0e8dc;">
-          <td style="padding:9px 14px;font-weight:700;color:#c0392b;border:1px solid #d0e8dc;">الخصم${bi?' / Discount':''}</td>
-          <td style="padding:9px 14px;text-align:left;color:#c0392b;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">- ${inv.discount.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
-        </tr>`:''}
-        <tr style="border:1px solid #d0e8dc;">
-          <td style="padding:9px 14px;font-weight:700;border:1px solid #d0e8dc;">ضريبة القيمة المضافة ${vatPct}%${bi?'<br><span style="font-size:9px;color:#888;">VAT Amount</span>':''}</td>
-          <td style="padding:9px 14px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">${inv.vatAmount.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
-        </tr>
-        <tr style="background:#0A3D2E;color:white;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
-          <td style="padding:11px 14px;font-weight:900;font-size:14px;border:1px solid #0d5235;">الإجمالي شامل الضريبة${bi?'<br><span style="font-size:9px;opacity:0.8;">Total Incl. VAT</span>':''}</td>
-          <td style="padding:11px 14px;text-align:left;font-weight:900;font-size:16px;font-family:'IBM Plex Mono',monospace;border:1px solid #0d5235;">${inv.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
-        </tr>
+      <!-- ══ جدول البنود ══ -->
+      <table style="width:100%;border-collapse:collapse;margin-bottom:22px;font-size:12px;flex:1;">
+        <thead>
+          <tr style="background:#0A3D2E;color:white;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+            <th style="padding:10px 10px;text-align:center;width:32px;">م</th>
+            <th style="padding:10px 10px;text-align:right;">${L('وصف السلعة / الخدمة','Description')}</th>
+            <th style="padding:10px 10px;text-align:center;">${L('الكمية','Qty')}</th>
+            <th style="padding:10px 10px;text-align:center;">${L('سعر الوحدة','Unit Price')}</th>
+            <th style="padding:10px 10px;text-align:center;">${L('المبلغ الخاضع','Taxable')}</th>
+            <th style="padding:10px 10px;text-align:center;">${L('ض.ق.م','VAT')} ${vatPct}%</th>
+            <th style="padding:10px 10px;text-align:center;">${L('الإجمالي','Total')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${inv.items.map((item,i)=>{
+            const taxable   = item.price * item.qty;
+            const lineVat   = taxable * rate;
+            const lineTotal = taxable + lineVat;
+            const bg = i%2===0 ? '#fff' : '#f8fbf9';
+            return `<tr style="background:${bg};-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+              <td style="padding:9px 10px;text-align:center;border-bottom:1px solid #e8efe9;color:#999;">${i+1}</td>
+              <td style="padding:9px 10px;border-bottom:1px solid #e8efe9;font-weight:700;">${item.name}</td>
+              <td style="padding:9px 10px;text-align:center;border-bottom:1px solid #e8efe9;font-weight:700;">${item.qty}</td>
+              <td style="padding:9px 10px;text-align:center;border-bottom:1px solid #e8efe9;font-family:'IBM Plex Mono',monospace;">${item.price.toFixed(2)}</td>
+              <td style="padding:9px 10px;text-align:center;border-bottom:1px solid #e8efe9;font-family:'IBM Plex Mono',monospace;">${taxable.toFixed(2)}</td>
+              <td style="padding:9px 10px;text-align:center;border-bottom:1px solid #e8efe9;font-family:'IBM Plex Mono',monospace;">${lineVat.toFixed(2)}</td>
+              <td style="padding:9px 10px;text-align:center;border-bottom:1px solid #e8efe9;font-weight:800;font-family:'IBM Plex Mono',monospace;">${lineTotal.toFixed(2)}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
       </table>
+
+      <!-- ══ الإجماليات + التفقيط ══ -->
+      <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:16px;">
+        <!-- التفقيط -->
+        <div style="flex:1;background:#f0faf5;border:1px solid #b2dfdb;border-radius:10px;padding:14px 18px;">
+          <div style="font-size:11px;color:#888;font-weight:700;margin-bottom:4px;">${L('المبلغ بالكلمات','Amount in Words')}</div>
+          <div style="font-size:14px;font-weight:900;color:#0A3D2E;">${tafqeet(inv.grandTotal)}</div>
+        </div>
+        <!-- جدول الإجماليات -->
+        <table style="width:320px;border-collapse:collapse;font-size:12px;flex-shrink:0;">
+          <tr><td style="padding:8px 12px;border:1px solid #e8efe9;font-weight:600;color:#555;">${L('المجموع بدون ضريبة','Subtotal')}</td>
+              <td style="padding:8px 12px;border:1px solid #e8efe9;text-align:left;font-weight:700;font-family:'IBM Plex Mono',monospace;">${inv.subtotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td></tr>
+          ${inv.discount>0?`<tr><td style="padding:8px 12px;border:1px solid #e8efe9;font-weight:600;color:#c0392b;">${L('الخصم','Discount')}</td>
+              <td style="padding:8px 12px;border:1px solid #e8efe9;text-align:left;font-weight:700;color:#c0392b;font-family:'IBM Plex Mono',monospace;">- ${inv.discount.toFixed(2)} <span class="sar-symbol">ر.س</span></td></tr>`:''}
+          <tr><td style="padding:8px 12px;border:1px solid #e8efe9;font-weight:600;color:#555;">${L('ضريبة القيمة المضافة','VAT')} ${vatPct}%</td>
+              <td style="padding:8px 12px;border:1px solid #e8efe9;text-align:left;font-weight:700;font-family:'IBM Plex Mono',monospace;">${inv.vatAmount.toFixed(2)} <span class="sar-symbol">ر.س</span></td></tr>
+          <tr style="background:#0A3D2E;color:white;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+              <td style="padding:12px;font-weight:900;font-size:13px;">${L('الإجمالي شامل الضريبة','Total Incl. VAT')}</td>
+              <td style="padding:12px;text-align:left;font-weight:900;font-size:17px;font-family:'IBM Plex Mono',monospace;">${inv.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td></tr>
+        </table>
+      </div>
+
     </div>
 
-    <!-- ══ التفقيط ══ -->
-    <div style="background:#f0faf5;border:1px solid #b2dfdb;border-radius:8px;padding:10px 16px;margin-bottom:16px;text-align:center;">
-      <div style="font-size:13px;font-weight:900;color:#0A3D2E;">${tafqeet(inv.grandTotal)}</div>
+    <!-- ══ شريط سفلي ══ -->
+    <div style="background:#f7faf8;border-top:2px solid #0A3D2E;padding:10px 32px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#888;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+      <div>${settings.companyNameAr} | ${L('الرقم الضريبي','VAT')}: ${settings.vatNumber}</div>
+      <div>${settings.city}${settings.address?' - '+settings.address:''} | ${settings.phone||''}</div>
     </div>
-
-    <div style="border-top:1px dashed #ccc;padding-top:6px;"></div>
   </div>`;
 }
 
