@@ -2314,10 +2314,10 @@
             <div class="form-group"><label>بادئة رقم الفاتورة</label><input class="form-input" id="invPrefix" value="INV"></div>
             <div class="form-group">
               <label>نموذج الطباعة</label>
-              <select class="form-input">
-                <option>A4 - عربي</option>
-                <option>A4 - ثنائي اللغة</option>
-                <option>80mm - حرارية</option>
+              <select class="form-input" id="invTemplate" onchange="localStorage.setItem('zatca_inv_template',this.value)">
+                <option value="a4-bilingual">A4 - ثنائي اللغة</option>
+                <option value="a4-arabic">A4 - عربي</option>
+                <option value="80mm">80mm - حرارية</option>
               </select>
             </div>
           </div>
@@ -2468,6 +2468,11 @@
   <div class="modal">
     <div class="invoice-print" id="invoicePrint"></div>
     <div class="modal-actions non-print">
+      <select id="modalInvTemplate" onchange="switchInvoiceTemplate(this.value)" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">
+        <option value="a4-bilingual">A4 - ثنائي اللغة</option>
+        <option value="a4-arabic">A4 - عربي</option>
+        <option value="80mm">80mm - حرارية</option>
+      </select>
       <button class="btn btn-primary btn-sm" onclick="downloadInvoicePDF()">⬇️ تحميل PDF</button>
       <button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ طباعة</button>
       <button class="btn btn-outline btn-sm" onclick="openReturnModal(currentInvoice)" id="returnBtn">↩️ مرتجع</button>
@@ -3904,24 +3909,72 @@ async function checkout() {
 }
 
 // ===== INVOICE MODAL =====
-function showInvoiceModal(inv) {
+let currentModalInvoice = null;
+
+function getInvTemplate() {
+  return localStorage.getItem('zatca_inv_template') || 'a4-bilingual';
+}
+
+function switchInvoiceTemplate(tmpl) {
+  localStorage.setItem('zatca_inv_template', tmpl);
+  const settingSel = document.getElementById('invTemplate');
+  if (settingSel) settingSel.value = tmpl;
+  if (currentModalInvoice) showInvoiceModal(currentModalInvoice);
+}
+
+function buildInvoiceHTML(inv, tmpl) {
   const typeMapAr = {standard:'فاتورة ضريبية',simplified:'فاتورة ضريبية مبسطة',debit:'إشعار دائن',credit:'إشعار مدين'};
   const typeMapEn = {standard:'Tax Invoice',simplified:'Simplified Tax Invoice',debit:'Debit Note',credit:'Credit Note'};
-  const payMap    = {cash:'نقدي',card:'بطاقة ائتمان',transfer:'تحويل بنكي',stcpay:'STC Pay'};
+  const payMapAr  = {cash:'نقدي',card:'بطاقة ائتمان',transfer:'تحويل بنكي',stcpay:'STC Pay'};
+  const payMapEn  = {cash:'Cash',card:'Credit Card',transfer:'Bank Transfer',stcpay:'STC Pay'};
   const rate      = (settings.vatRate||settings.taxRate||15)/100;
   const vatPct    = Math.round(rate*100);
-  const qrData    = buildQrData(inv);
+  const bi = (tmpl === 'a4-bilingual'); // ثنائي اللغة
 
-  const html = `
+  if (tmpl === '80mm') {
+    // ══════ حرارية 80mm ══════
+    return `
+    <div style="font-family:Cairo,Arial,sans-serif;direction:rtl;color:#111;background:white;padding:10px;max-width:302px;margin:0 auto;font-size:11px;">
+      <div style="text-align:center;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed #333;">
+        <div style="font-size:16px;font-weight:900;">${settings.companyNameAr}</div>
+        <div style="font-size:10px;color:#555;">${settings.companyNameEn||''}</div>
+        <div style="font-size:10px;margin-top:4px;">الرقم الضريبي: ${settings.vatNumber}</div>
+        <div style="font-size:10px;">س.ت: ${settings.crNumber} | ${settings.city}</div>
+        <div style="font-size:13px;font-weight:900;margin-top:6px;">${typeMapAr[inv.type]||'فاتورة'}</div>
+        <div style="font-size:11px;margin-top:2px;">${inv.number}</div>
+        <div style="font-size:10px;">${inv.dateFormatted}</div>
+      </div>
+      <div style="margin-bottom:6px;font-size:10px;">العميل: ${inv.customer.name||'عميل نقدي'} | الدفع: ${payMapAr[inv.payMethod]||inv.payMethod}</div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:8px;font-size:10px;">
+        <thead><tr style="border-bottom:1px dashed #333;"><th style="padding:4px;text-align:right;">المنتج</th><th style="padding:4px;text-align:center;">الكمية</th><th style="padding:4px;text-align:center;">السعر</th><th style="padding:4px;text-align:center;">المجموع</th></tr></thead>
+        <tbody>${inv.items.map(item=>`<tr style="border-bottom:1px dotted #ccc;">
+          <td style="padding:3px 4px;">${item.name}</td>
+          <td style="padding:3px;text-align:center;">${item.qty}</td>
+          <td style="padding:3px;text-align:center;">${item.price.toFixed(2)}</td>
+          <td style="padding:3px;text-align:center;font-weight:700;">${(item.price*item.qty).toFixed(2)}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+      <div style="border-top:1px dashed #333;padding-top:6px;font-size:11px;">
+        <div style="display:flex;justify-content:space-between;"><span>المجموع</span><strong>${inv.subtotal.toFixed(2)}</strong></div>
+        ${inv.discount>0?`<div style="display:flex;justify-content:space-between;color:#c0392b;"><span>الخصم</span><strong>- ${inv.discount.toFixed(2)}</strong></div>`:''}
+        <div style="display:flex;justify-content:space-between;"><span>الضريبة ${vatPct}%</span><strong>${inv.vatAmount.toFixed(2)}</strong></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;margin-top:4px;padding-top:4px;border-top:1px dashed #333;"><span>الإجمالي</span><span>${inv.grandTotal.toFixed(2)} ر.س</span></div>
+      </div>
+      <div style="text-align:center;margin-top:8px;"><div id="qrCode${inv.id}" style="display:inline-block;width:80px;height:80px;"></div></div>
+    </div>`;
+  }
+
+  // ══════ A4 (عربي أو ثنائي) ══════
+  return `
   <div style="font-family:Cairo,Arial,sans-serif;direction:rtl;color:#111;background:white;padding:30px 40px;max-width:794px;margin:0 auto;min-height:1100px;display:flex;flex-direction:column;">
 
-    <!-- ══ رأس الفاتورة ══ -->
+    <!-- ══ رأس ══ -->
     <div style="display:flex;align-items:center;padding-bottom:16px;border-bottom:3px solid #0A3D2E;margin-bottom:20px;">
       <div style="flex:1;">
         <div style="font-size:24px;font-weight:900;color:#0A3D2E;">${settings.companyNameAr}</div>
-        <div style="font-size:14px;color:#555;margin-top:2px;">${settings.companyNameEn||''}</div>
+        ${bi?`<div style="font-size:14px;color:#555;margin-top:2px;">${settings.companyNameEn||''}</div>`:''}
         <div style="font-size:12px;color:#666;margin-top:8px;line-height:1.8;">
-          الرقم الضريبي: <strong>${settings.vatNumber}</strong><br>
+          الرقم الضريبي: <strong>${settings.vatNumber}</strong>${bi?`<br>VAT No.: <strong>${settings.vatNumber}</strong>`:''}<br>
           س.ت: ${settings.crNumber} | ${settings.city} - ${settings.address||''}
         </div>
       </div>
@@ -3929,12 +3982,12 @@ function showInvoiceModal(inv) {
         <div id="qrCode${inv.id}" style="width:110px;height:110px;"></div>
       </div>
       <div style="flex:1;text-align:left;">
-        <div style="font-size:20px;font-weight:900;color:#0A3D2E;">${typeMapEn[inv.type]||'Tax Invoice'}</div>
-        <div style="font-size:16px;font-weight:800;color:#333;">${typeMapAr[inv.type]||'فاتورة ضريبية'}</div>
+        ${bi?`<div style="font-size:20px;font-weight:900;color:#0A3D2E;">${typeMapEn[inv.type]||'Tax Invoice'}</div>`:''}
+        <div style="font-size:${bi?'16':'20'}px;font-weight:${bi?'800':'900'};color:${bi?'#333':'#0A3D2E'};">${typeMapAr[inv.type]||'فاتورة ضريبية'}</div>
         <div style="margin-top:10px;background:#f5f9f7;border:1px solid #d0e8dc;border-radius:8px;padding:10px 14px;">
-          <div style="font-size:11px;color:#888;">رقم الفاتورة / Invoice No.</div>
+          <div style="font-size:11px;color:#888;">رقم الفاتورة${bi?' / Invoice No.':''}</div>
           <div style="font-size:15px;font-weight:900;color:#0A3D2E;font-family:'IBM Plex Mono',monospace;">${inv.number}</div>
-          <div style="font-size:11px;color:#888;margin-top:6px;">التاريخ / Date</div>
+          <div style="font-size:11px;color:#888;margin-top:6px;">التاريخ${bi?' / Date':''}</div>
           <div style="font-size:13px;font-weight:700;">${inv.dateFormatted}</div>
         </div>
       </div>
@@ -3944,24 +3997,24 @@ function showInvoiceModal(inv) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
       <div style="border:1px solid #d0e8dc;border-radius:8px;overflow:hidden;">
         <div style="background:#0A3D2E;color:white;padding:8px 14px;font-size:12px;font-weight:800;display:flex;justify-content:space-between;">
-          <span>بيانات البائع</span><span>Seller Details</span>
+          <span>بيانات البائع</span>${bi?'<span>Seller Details</span>':''}
         </div>
         <div style="padding:10px 14px;font-size:12px;line-height:2;">
-          <div><span style="color:#888;">الاسم:</span> <strong>${settings.companyNameAr}</strong></div>
-          <div><span style="color:#888;">الرقم الضريبي:</span> <strong style="font-family:'IBM Plex Mono',monospace;">${settings.vatNumber}</strong></div>
-          <div><span style="color:#888;">السجل التجاري:</span> <strong style="font-family:'IBM Plex Mono',monospace;">${settings.crNumber}</strong></div>
-          <div><span style="color:#888;">العنوان:</span> ${settings.city}${settings.address?'، '+settings.address:''}</div>
+          <div><span style="color:#888;">الاسم${bi?' / Name':''}:</span> <strong>${settings.companyNameAr}</strong></div>
+          <div><span style="color:#888;">الرقم الضريبي${bi?' / VAT No.':''}:</span> <strong style="font-family:'IBM Plex Mono',monospace;">${settings.vatNumber}</strong></div>
+          <div><span style="color:#888;">السجل التجاري${bi?' / CR':''}:</span> <strong style="font-family:'IBM Plex Mono',monospace;">${settings.crNumber}</strong></div>
+          <div><span style="color:#888;">العنوان${bi?' / Address':''}:</span> ${settings.city}${settings.address?'، '+settings.address:''}</div>
         </div>
       </div>
       <div style="border:1px solid #d0e8dc;border-radius:8px;overflow:hidden;">
         <div style="background:#0A3D2E;color:white;padding:8px 14px;font-size:12px;font-weight:800;display:flex;justify-content:space-between;">
-          <span>بيانات المشتري</span><span>Buyer Details</span>
+          <span>بيانات المشتري</span>${bi?'<span>Buyer Details</span>':''}
         </div>
         <div style="padding:10px 14px;font-size:12px;line-height:2;">
-          <div><span style="color:#888;">الاسم:</span> <strong>${inv.customer.name||'عميل نقدي'}</strong></div>
-          <div><span style="color:#888;">الرقم الضريبي:</span> <strong style="font-family:'IBM Plex Mono',monospace;">${inv.customer.vat||'—'}</strong></div>
-          <div><span style="color:#888;">الجوال:</span> ${inv.customer.phone||'—'}</div>
-          <div><span style="color:#888;">طريقة الدفع:</span> ${payMap[inv.payMethod]||inv.payMethod}</div>
+          <div><span style="color:#888;">الاسم${bi?' / Name':''}:</span> <strong>${inv.customer.name||'عميل نقدي'}</strong></div>
+          <div><span style="color:#888;">الرقم الضريبي${bi?' / VAT No.':''}:</span> <strong style="font-family:'IBM Plex Mono',monospace;">${inv.customer.vat||'—'}</strong></div>
+          <div><span style="color:#888;">الجوال${bi?' / Mobile':''}:</span> ${inv.customer.phone||'—'}</div>
+          <div><span style="color:#888;">طريقة الدفع${bi?' / Payment':''}:</span> ${payMapAr[inv.payMethod]||inv.payMethod}</div>
         </div>
       </div>
     </div>
@@ -3971,11 +4024,11 @@ function showInvoiceModal(inv) {
       <thead>
         <tr style="background:#0A3D2E;color:white;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
           <th style="padding:10px 12px;text-align:center;width:36px;border:1px solid #0d5235;">م</th>
-          <th style="padding:10px 12px;text-align:right;border:1px solid #0d5235;">وصف السلعة / الخدمة</th>
-          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">الكمية</th>
-          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">سعر الوحدة</th>
-          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">ض.ق.م ${vatPct}%</th>
-          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">الإجمالي</th>
+          <th style="padding:10px 12px;text-align:right;border:1px solid #0d5235;">وصف السلعة${bi?'<br><span style="font-size:9px;opacity:0.8;">Description</span>':''}</th>
+          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">الكمية${bi?'<br><span style="font-size:9px;opacity:0.8;">Qty</span>':''}</th>
+          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">سعر الوحدة${bi?'<br><span style="font-size:9px;opacity:0.8;">Unit Price</span>':''}</th>
+          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">ض.ق.م ${vatPct}%${bi?'<br><span style="font-size:9px;opacity:0.8;">VAT</span>':''}</th>
+          <th style="padding:10px 12px;text-align:center;border:1px solid #0d5235;">الإجمالي${bi?'<br><span style="font-size:9px;opacity:0.8;">Total</span>':''}</th>
         </tr>
       </thead>
       <tbody>
@@ -4000,19 +4053,19 @@ function showInvoiceModal(inv) {
     <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
       <table style="width:340px;border-collapse:collapse;font-size:13px;">
         <tr style="border:1px solid #d0e8dc;">
-          <td style="padding:9px 14px;font-weight:700;border:1px solid #d0e8dc;">المجموع بدون ضريبة</td>
+          <td style="padding:9px 14px;font-weight:700;border:1px solid #d0e8dc;">المجموع بدون ضريبة${bi?'<br><span style="font-size:9px;color:#888;">Total Excl. VAT</span>':''}</td>
           <td style="padding:9px 14px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">${inv.subtotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>
         ${inv.discount>0?`<tr style="border:1px solid #d0e8dc;">
-          <td style="padding:9px 14px;font-weight:700;color:#c0392b;border:1px solid #d0e8dc;">الخصم</td>
+          <td style="padding:9px 14px;font-weight:700;color:#c0392b;border:1px solid #d0e8dc;">الخصم${bi?' / Discount':''}</td>
           <td style="padding:9px 14px;text-align:left;color:#c0392b;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">- ${inv.discount.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>`:''}
         <tr style="border:1px solid #d0e8dc;">
-          <td style="padding:9px 14px;font-weight:700;border:1px solid #d0e8dc;">ضريبة القيمة المضافة ${vatPct}%</td>
+          <td style="padding:9px 14px;font-weight:700;border:1px solid #d0e8dc;">ضريبة القيمة المضافة ${vatPct}%${bi?'<br><span style="font-size:9px;color:#888;">VAT Amount</span>':''}</td>
           <td style="padding:9px 14px;text-align:left;font-weight:800;font-family:'IBM Plex Mono',monospace;border:1px solid #d0e8dc;">${inv.vatAmount.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>
         <tr style="background:#0A3D2E;color:white;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
-          <td style="padding:11px 14px;font-weight:900;font-size:14px;border:1px solid #0d5235;">الإجمالي شامل الضريبة</td>
+          <td style="padding:11px 14px;font-weight:900;font-size:14px;border:1px solid #0d5235;">الإجمالي شامل الضريبة${bi?'<br><span style="font-size:9px;opacity:0.8;">Total Incl. VAT</span>':''}</td>
           <td style="padding:11px 14px;text-align:left;font-weight:900;font-size:16px;font-family:'IBM Plex Mono',monospace;border:1px solid #0d5235;">${inv.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></td>
         </tr>
       </table>
@@ -4023,22 +4076,31 @@ function showInvoiceModal(inv) {
       <div style="font-size:13px;font-weight:900;color:#0A3D2E;">${tafqeet(inv.grandTotal)}</div>
     </div>
 
-    <!-- ══ تذييل ══ -->
     <div style="border-top:1px dashed #ccc;padding-top:6px;"></div>
-  </div>
-  `;
+  </div>`;
+}
 
-  document.getElementById('invoicePrint').innerHTML = html;
+function showInvoiceModal(inv) {
+  currentModalInvoice = inv;
+  const tmpl = getInvTemplate();
+  const qrData = buildQrData(inv);
+
+  document.getElementById('invoicePrint').innerHTML = buildInvoiceHTML(inv, tmpl);
   document.getElementById('invoiceModal').classList.add('open');
 
+  // مزامنة القائمة
+  const modalSel = document.getElementById('modalInvTemplate');
+  if (modalSel) modalSel.value = tmpl;
+
   // Generate QR
+  const qrSize = tmpl === '80mm' ? 80 : 110;
   setTimeout(() => {
     try {
       const qrEl = document.getElementById('qrCode' + inv.id);
       if (qrEl) {
         new QRCode(qrEl, {
           text: qrData,
-          width: 110, height: 110,
+          width: qrSize, height: qrSize,
           colorDark: '#0A3D2E', colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.M
         });
@@ -4283,6 +4345,10 @@ async function populateSettingsView() {
     if (hidden) hidden.value = settings[f] || '';
     if (view)   view.textContent = settings[f] || '—';
   });
+
+  // مزامنة قائمة نموذج الفاتورة
+  const tmplSel = document.getElementById('invTemplate');
+  if (tmplSel) tmplSel.value = localStorage.getItem('zatca_inv_template') || 'a4-bilingual';
 
   // تحميل بيانات الاشتراك
   if (currentTenantId && masterDB) {
