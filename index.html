@@ -3193,7 +3193,7 @@ let settings = JSON.parse(localStorage.getItem('zatca_settings') || 'null') || {
 let currentInvType = 'standard';
 let currentPayMethod = 'cash';
 let currentInvoice = null;
-let invCounter = invoices.length + 1;
+let invCounter = 1;
 
 // ===== PRINT =====
 function downloadInvoicePDF() {
@@ -3860,7 +3860,7 @@ async function checkout() {
   const invNum = `${settings.invPrefix}-${String(invCounter).padStart(6,'0')}`;
 
   const invoice = {
-    id: invCounter++,
+    id: invCounter,
     number: invNum,
     type: currentInvType,
     date: now.toISOString(),
@@ -3880,7 +3880,9 @@ async function checkout() {
   };
 
   invoices.unshift(invoice);
+  invCounter++;
   localStorage.setItem('zatca_invoices', JSON.stringify(invoices));
+  localStorage.setItem('zatca_inv_counter', String(invCounter));
   currentInvoice = invoice;
 
   // Update customer stats
@@ -6180,7 +6182,7 @@ function tdbSet(key, value) {
 const tenantCache = {};
 const TENANT_KEYS = ['zatca_invoices','zatca_products','zatca_settings','zatca_movements',
                      'zatca_suppliers','zatca_po','zatca_customers','zatca_users','zatca_logs',
-                     'zatca_quotations','zatca_certs'];
+                     'zatca_quotations','zatca_certs','zatca_inv_counter'];
 
 async function loadAllTenantData() {
   for (const k of TENANT_KEYS) {
@@ -6432,6 +6434,10 @@ async function reloadAppModules() {
   activityLogs   = JSON.parse(localStorage.getItem('zatca_logs') || '[]');
   quotations     = JSON.parse(localStorage.getItem('zatca_quotations') || '[]');
   certificates   = JSON.parse(localStorage.getItem('zatca_certs') || '[]');
+  // استعادة عداد الفواتير المتسلسل
+  const savedCounter = parseInt(localStorage.getItem('zatca_inv_counter') || '0');
+  const maxFromInvoices = invoices.length > 0 ? Math.max(...invoices.map(i => i.id || 0)) : 0;
+  invCounter = Math.max(savedCounter, maxFromInvoices) + 1;
   if (typeof renderCategories === 'function') renderCategories();
   if (typeof renderProducts   === 'function') renderProducts();
   // استعادة الشاشة الأخيرة
