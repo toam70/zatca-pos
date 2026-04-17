@@ -934,6 +934,24 @@
     .invoice-print { padding: 20px !important; }
     .inv-company h2 { font-size: 18px !important; }
     .inv-title h1 { font-size: 22px !important; }
+
+    /* شاشة الفواتير على الجوال */
+    .inv-mobile-cards { display: flex !important; flex-direction: column; gap: 10px; padding: 12px; }
+    .inv-mobile-card {
+      background: white; border: 1px solid var(--border); border-radius: 12px;
+      padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .inv-mobile-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .inv-mobile-card-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 900; color: var(--primary); }
+    .inv-mobile-card-total { font-size: 17px; font-weight: 900; color: var(--primary); }
+    .inv-mobile-card-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+    .inv-mobile-card-foot { display: flex; justify-content: space-between; align-items: center; }
+    /* إخفاء الجدول على الجوال وإظهار البطاقات */
+    .inv-table-wrap { display: none !important; }
+    .inv-mobile-cards-wrap { display: block !important; }
+    /* شريط الفلاتر على الجوال */
+    .inv-filters-wrap { flex-wrap: wrap !important; gap: 8px !important; }
+    .inv-filters-wrap input, .inv-filters-wrap select { width: 100% !important; font-size: 14px !important; }
   }
 
   @media (max-width: 480px) {
@@ -1783,7 +1801,7 @@
     <div class="card">
       <div class="card-header">
         <span>📄 سجل الفواتير</span>
-        <div style="display:flex;gap:8px;">
+        <div class="inv-filters-wrap" style="display:flex;gap:8px;">
           <input id="invSearch" type="text" placeholder="🔍 بحث برقم أو عميل..."
             style="padding:6px 12px;border:2px solid var(--border);border-radius:8px;
             font-family:'Cairo';font-size:12px;width:160px;outline:none;"
@@ -1802,7 +1820,8 @@
           </select>
         </div>
       </div>
-      <div class="card-body" style="padding:0;overflow-x:auto;">
+      <!-- جدول — يظهر على الشاشات الكبيرة -->
+      <div class="card-body inv-table-wrap" style="padding:0;overflow-x:auto;">
         <table class="data-table">
           <thead>
             <tr>
@@ -1819,6 +1838,10 @@
           </thead>
           <tbody id="invoicesTable"></tbody>
         </table>
+      </div>
+      <!-- بطاقات — تظهر على الجوال -->
+      <div class="inv-mobile-cards-wrap" style="display:none;">
+        <div class="inv-mobile-cards" id="invoicesMobileCards"></div>
       </div>
     </div>
   </div>
@@ -4197,10 +4220,13 @@ function renderInvoicesTable() {
     return matchType && matchStatus && matchSearch;
   });
 
+  const mobileCards = document.getElementById('invoicesMobileCards');
+
   if (!list.length) {
     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted);">'
       + (invoices.length ? '🔍 لا توجد نتائج للفلتر المحدد' : 'لا توجد فواتير بعد')
       + '</td></tr>';
+    if (mobileCards) mobileCards.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted);">${invoices.length ? '🔍 لا توجد نتائج للفلتر المحدد' : 'لا توجد فواتير بعد'}</div>`;
     return;
   }
 
@@ -4221,6 +4247,26 @@ function renderInvoicesTable() {
       </td>
     </tr>
   `).join('');
+
+  if (mobileCards) {
+    mobileCards.innerHTML = list.map(inv => `
+      <div class="inv-mobile-card" onclick="viewInvoice(${inv.id})">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <strong style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--primary);">${inv.number}</strong>
+          <strong style="font-size:15px;">${inv.grandTotal.toFixed(2)} <span class="sar-symbol">ر.س</span></strong>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--text-muted);margin-bottom:8px;">
+          <span>👤 ${inv.customer?.name || '—'}</span>
+          <span>📅 ${inv.dateFormatted}</span>
+          <span>${payMap[inv.payMethod] || inv.payMethod}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="status-badge ${inv.status === 'sent' ? 'status-sent' : 'status-pending'}">${inv.status === 'sent' ? '✓ مرسلة' : '⏳ معلقة'}</span>
+          <span style="font-size:12px;color:var(--text-muted);">${typeMap[inv.type] || inv.type}</span>
+        </div>
+      </div>
+    `).join('');
+  }
 }
 
 function filterInvoices() { renderInvoicesTable(); }
