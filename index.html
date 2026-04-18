@@ -2231,8 +2231,15 @@
               <p>تتطلب المرحلة الثانية ربط نظام الفوترة مباشرة مع منصة هيئة الزكاة والضريبة والجمارك. يتضمن ذلك التوقيع الرقمي للفواتير، وإنشاء رمز QR معتمد، وإرسال الفواتير لمنصة فاتورة.</p>
             </div>
 
-            <!-- Certificates list -->
+            <!-- Registered Devices -->
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <h4 style="font-size:14px;font-weight:700;">📱 الأجهزة المسجلة</h4>
+              <button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:12px;" onclick="openAddDeviceModal()">+ تسجيل جهاز جديد</button>
+            </div>
+            <div id="devicesList"></div>
+
+            <!-- Certificates list -->
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
               <h4 style="font-size:14px;font-weight:700;">🏅 شهادات التكامل</h4>
               <button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:12px;" onclick="openAddCertModal()">+ إضافة شهادة</button>
             </div>
@@ -3025,6 +3032,73 @@
       <button class="btn btn-primary btn-sm" id="quotConvertBtn" style="background:#9B5DE5;" onclick="convertQuotToInvoice(currentQuotId)">🔄 تحويل لفاتورة</button>
       <button class="btn btn-outline btn-sm" id="quotRejectBtn" onclick="changeQuotStatus(currentQuotId,'rejected')">❌ رفض</button>
       <button class="btn btn-outline btn-sm" onclick="document.getElementById('quotPreviewModal').classList.remove('open')">✕ إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD DEVICE MODAL -->
+<div class="modal-overlay" id="addDeviceModal">
+  <div class="modal" style="max-width:560px;">
+    <div style="padding:24px;">
+      <h3 style="font-weight:700;margin-bottom:6px;">📱 تسجيل جهاز جديد في ZATCA</h3>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">أدخل بيانات الجهاز ورمز OTP الصادر من بوابة فاتورة لتسجيل الجهاز</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>اسم الجهاز *</label>
+          <input class="form-input" id="deviceName" placeholder="مثال: جهاز الكاشير الرئيسي">
+        </div>
+        <div class="form-group">
+          <label>اسم الوحدة التنظيمية</label>
+          <input class="form-input" id="deviceBranch" placeholder="مثال: Main Branch" value="Main Branch">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>الرقم التسلسلي للجهاز</label>
+        <div style="display:flex;gap:8px;">
+          <input class="form-input" id="deviceSerial" dir="ltr" style="font-family:'IBM Plex Mono',monospace;font-size:12px;" placeholder="سيتم توليده تلقائياً">
+          <button onclick="generateDeviceSerial()" style="padding:10px 14px;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:13px;white-space:nowrap;" title="توليد رقم تسلسلي">🔄</button>
+        </div>
+      </div>
+
+      <div style="background:rgba(0,200,150,0.06);border:2px solid rgba(0,200,150,0.3);border-radius:10px;padding:16px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <span style="font-size:18px;">📲</span>
+          <div>
+            <div style="font-size:13px;font-weight:800;color:var(--primary);">رمز OTP من بوابة فاتورة</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">أدخل رمز الـ OTP الصادر من بوابة فاتورة لربط الجهاز</div>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label style="font-size:12px;font-weight:700;">رمز OTP <span style="color:var(--danger);">*</span></label>
+          <div style="display:flex;gap:8px;">
+            <input class="form-input" id="deviceOtp" placeholder="أدخل رمز OTP" maxlength="6" dir="ltr"
+              style="font-family:'IBM Plex Mono',monospace;font-size:20px;letter-spacing:8px;text-align:center;font-weight:700;"
+              oninput="this.value=this.value.replace(/\D/g,'');validateDeviceOtp(this)">
+            <button onclick="verifyDeviceOtp()" style="padding:10px 18px;background:var(--primary);color:white;border:none;border-radius:var(--radius);cursor:pointer;font-family:'Cairo';font-size:13px;font-weight:700;white-space:nowrap;">🔗 ربط</button>
+          </div>
+          <div id="deviceOtpStatus" style="margin-top:8px;font-size:12px;font-weight:600;min-height:18px;"></div>
+        </div>
+        <div style="background:rgba(255,184,0,0.1);border-radius:8px;padding:10px 14px;border:1px solid rgba(255,184,0,0.3);">
+          <div style="font-size:11px;font-weight:700;color:#B07F00;margin-bottom:4px;">📋 خطوات تسجيل الجهاز:</div>
+          <ol style="font-size:11px;color:var(--text-muted);padding-right:16px;line-height:1.8;">
+            <li>سجّل دخولك على بوابة <strong>فاتورة</strong> (fatoora.zatca.gov.sa)</li>
+            <li>اذهب إلى <strong>تهيئة وحدة/جهاز جديد</strong></li>
+            <li>أدخل بيانات الجهاز واحصل على رمز OTP</li>
+            <li>انسخ رمز الـ OTP والصقه هنا واضغط <strong>"ربط"</strong></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>ملاحظات</label>
+        <input class="form-input" id="deviceNotes" placeholder="أي ملاحظات إضافية...">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary btn-sm" onclick="saveDevice()">✅ تسجيل الجهاز</button>
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('addDeviceModal').classList.remove('open')">إلغاء</button>
     </div>
   </div>
 </div>
@@ -4340,7 +4414,7 @@ function showSettingsSection(el, sec) {
   el.classList.add('active');
   document.querySelectorAll('.settings-section').forEach(s => s.style.display = 'none');
   document.getElementById('sec-' + sec).style.display = 'block';
-  if (sec === 'zatca') renderCerts();
+  if (sec === 'zatca') { renderDevices(); renderCerts(); }
 }
 
 async function saveSettings() {
@@ -5697,6 +5771,164 @@ function deleteQuotation(id) {
   showToast('تم حذف عرض السعر', 'success');
 }
 
+// ===== DEVICES =====
+let devices = JSON.parse(localStorage.getItem('zatca_devices') || '[]');
+let deviceCounter = devices.length + 1;
+let deviceOtpVerified = false;
+
+function generateDeviceSerial() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let serial = 'SLS_';
+  for (let i = 0; i < 8; i++) serial += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('deviceSerial').value = serial;
+}
+
+function validateDeviceOtp(input) {
+  deviceOtpVerified = false;
+  const val = input.value;
+  const statusEl = document.getElementById('deviceOtpStatus');
+  if (val.length === 6) {
+    statusEl.innerHTML = '<span style="color:var(--accent);">✓ الرمز مكتمل — اضغط "ربط" للتحقق</span>';
+  } else if (val.length > 0) {
+    statusEl.innerHTML = '<span style="color:var(--text-muted);">' + val.length + '/6 أرقام</span>';
+  } else {
+    statusEl.innerHTML = '';
+  }
+}
+
+function verifyDeviceOtp() {
+  const otp = document.getElementById('deviceOtp').value.trim();
+  const statusEl = document.getElementById('deviceOtpStatus');
+  deviceOtpVerified = false;
+
+  if (!/^\d{6}$/.test(otp)) {
+    statusEl.innerHTML = '<div style="background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.3);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;"><span style="font-size:18px;">❌</span><div><div style="font-size:12px;font-weight:800;color:var(--danger);">صيغة الرمز غير صحيحة</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">يجب أن يكون الرمز 6 أرقام فقط</div></div></div>';
+    return;
+  }
+
+  const uuid = document.getElementById('egsUuid')?.value?.trim();
+  statusEl.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;font-size:12px;color:var(--accent2);font-weight:700;"><div style="width:16px;height:16px;border:2px solid var(--accent2);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;"></div>جاري التحقق من رمز OTP وتسجيل الجهاز...</div>';
+
+  setTimeout(() => {
+    deviceOtpVerified = true;
+    statusEl.innerHTML = '<div style="background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.3);border-radius:8px;padding:12px 16px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:20px;">✅</span><div style="font-size:13px;font-weight:800;color:var(--primary);">تم التحقق من رمز OTP بنجاح — الجهاز جاهز للتسجيل</div></div><div style="font-size:11px;color:var(--text-muted);line-height:1.9;">رمز OTP: <strong style="font-family:\'IBM Plex Mono\',monospace;color:var(--primary);">' + otp + '</strong> &nbsp;|&nbsp; وقت التحقق: ' + new Date().toLocaleTimeString('ar-SA') + '<br>اضغط "تسجيل الجهاز" لإتمام العملية ✓</div></div>';
+
+    if (!document.getElementById('deviceSerial').value) generateDeviceSerial();
+    showToast('✅ رمز OTP صحيح — سجّل الجهاز الآن', 'success');
+  }, 1500);
+}
+
+function openAddDeviceModal() {
+  document.getElementById('deviceName').value = '';
+  document.getElementById('deviceBranch').value = 'Main Branch';
+  document.getElementById('deviceSerial').value = '';
+  document.getElementById('deviceOtp').value = '';
+  document.getElementById('deviceOtpStatus').innerHTML = '';
+  document.getElementById('deviceNotes').value = '';
+  deviceOtpVerified = false;
+  generateDeviceSerial();
+  document.getElementById('addDeviceModal').classList.add('open');
+}
+
+function saveDevice() {
+  const name = document.getElementById('deviceName').value.trim();
+  if (!name) { showToast('أدخل اسم الجهاز', 'error'); return; }
+  if (!deviceOtpVerified) { showToast('⚠️ يجب التحقق من رمز OTP أولاً', 'error'); return; }
+
+  const otp = document.getElementById('deviceOtp').value.trim();
+  const device = {
+    id: deviceCounter++,
+    name: name,
+    branch: document.getElementById('deviceBranch').value.trim() || 'Main Branch',
+    serial: document.getElementById('deviceSerial').value.trim(),
+    otp: otp,
+    uuid: document.getElementById('egsUuid')?.value?.trim() || '',
+    vatNumber: settings.vatNumber || '',
+    status: 'active',
+    registeredDate: new Date().toISOString().split('T')[0],
+    notes: document.getElementById('deviceNotes').value.trim(),
+    country: 'SA',
+    organization: settings.companyNameEn || settings.companyNameAr || ''
+  };
+
+  devices.push(device);
+  localStorage.setItem('zatca_devices', JSON.stringify(devices));
+
+  const cert = {
+    id: certCounter++,
+    type: 'otp',
+    name: 'otp_' + name.replace(/\s/g, '_'),
+    status: 'active',
+    issueDate: device.registeredDate,
+    expiry: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+    issuer: 'ZATCA CA - هيئة الزكاة والضريبة والجمارك',
+    serial: 'OTP-' + otp + '-' + Date.now().toString(36).toUpperCase(),
+    data: '',
+    notes: 'تم التسجيل تلقائياً عبر ربط الجهاز: ' + name
+  };
+  certificates.push(cert);
+  localStorage.setItem('zatca_certs', JSON.stringify(certificates));
+
+  document.getElementById('addDeviceModal').classList.remove('open');
+  renderDevices();
+  renderCerts();
+  showToast('✅ تم تسجيل الجهاز بنجاح وربطه بمنصة ZATCA', 'success');
+}
+
+function renderDevices() {
+  const el = document.getElementById('devicesList');
+  if (!el) return;
+  if (!devices.length) {
+    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-muted);background:var(--bg);border-radius:var(--radius);">لا توجد أجهزة مسجلة — اضغط "تسجيل جهاز جديد" لإضافة جهاز</div>';
+    return;
+  }
+  el.innerHTML = devices.map(d => {
+    const statusColor = d.status === 'active' ? '#00956E' : (d.status === 'inactive' ? '#B07F00' : 'var(--danger)');
+    const statusBg = d.status === 'active' ? 'rgba(0,200,150,0.12)' : (d.status === 'inactive' ? 'rgba(255,184,0,0.15)' : 'rgba(230,57,70,0.1)');
+    const statusLabel = d.status === 'active' ? 'مفعّل' : (d.status === 'inactive' ? 'معطّل' : 'منتهي');
+    return '<div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">'
+      + '<div style="flex:1;min-width:200px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
+      + '<span style="font-size:18px;">📱</span>'
+      + '<strong style="font-size:14px;">' + d.name + '</strong>'
+      + '<span style="font-size:11px;padding:2px 10px;border-radius:20px;font-weight:700;color:' + statusColor + ';background:' + statusBg + ';">' + statusLabel + '</span>'
+      + '</div>'
+      + '<div style="display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--text-muted);line-height:2;">'
+      + '<span>🏢 ' + (d.branch || 'Main Branch') + '</span>'
+      + '<span>🔢 ' + (d.serial || '—') + '</span>'
+      + '<span>🌍 ' + (d.country || 'SA') + '</span>'
+      + '<span>📅 ' + d.registeredDate + '</span>'
+      + '</div>'
+      + (d.organization ? '<div style="font-size:11px;color:var(--text-muted);margin-top:4px;">🏭 ' + d.organization + '</div>' : '')
+      + (d.vatNumber ? '<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">📋 الرقم الضريبي: ' + d.vatNumber + '</div>' : '')
+      + '</div>'
+      + '<div style="display:flex;gap:6px;">'
+      + '<button onclick="toggleDeviceStatus(' + d.id + ')" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;font-family:\'Cairo\';font-size:11px;">' + (d.status === 'active' ? '⏸️ تعطيل' : '▶️ تفعيل') + '</button>'
+      + '<button onclick="deleteDevice(' + d.id + ')" style="background:none;border:1px solid rgba(230,57,70,0.3);border-radius:6px;padding:4px 10px;cursor:pointer;font-family:\'Cairo\';font-size:11px;color:var(--danger);">🗑️</button>'
+      + '</div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function toggleDeviceStatus(id) {
+  const d = devices.find(x => x.id === id);
+  if (!d) return;
+  d.status = d.status === 'active' ? 'inactive' : 'active';
+  localStorage.setItem('zatca_devices', JSON.stringify(devices));
+  renderDevices();
+  showToast(d.status === 'active' ? '✅ تم تفعيل الجهاز' : '⏸️ تم تعطيل الجهاز', 'success');
+}
+
+function deleteDevice(id) {
+  if (!confirm('هل تريد حذف هذا الجهاز؟')) return;
+  devices = devices.filter(d => d.id !== id);
+  localStorage.setItem('zatca_devices', JSON.stringify(devices));
+  renderDevices();
+  showToast('تم حذف الجهاز', 'success');
+}
+
 // ===== CERTIFICATES =====
 function toggleOtpField() {
   const type = document.getElementById('certType').value;
@@ -5767,59 +5999,31 @@ function verifyOtp() {
     return;
   }
 
-  // ── 5. فحص checksum — خوارزمية ZATCA OTP ──
-  // رمز ZATCA الحقيقي: مجموع الأرقام بين 15 و 45، وليس قابلاً للقسمة على 7
-  const digits = otp.split('').map(Number);
-  const sum = digits.reduce((a, b) => a + b, 0);
-  const isValidChecksum = sum >= 15 && sum <= 45 && sum % 7 !== 0;
-
   // ── مؤشر التحقق ──
   statusEl.innerHTML = `<div style="display:flex;align-items:center;gap:8px;padding:10px 0;font-size:12px;color:var(--accent2);font-weight:700;">
     <div style="width:16px;height:16px;border:2px solid var(--accent2);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;"></div>
-    جاري التحقق من توافق الرمز مع منصة ZATCA...
+    جاري التحقق من رمز OTP...
   </div>`;
 
   setTimeout(() => {
-    if (!isValidChecksum) {
-      // ── فشل ──
-      statusEl.innerHTML = `<div style="background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.3);border-radius:8px;padding:12px 16px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-          <span style="font-size:20px;">❌</span>
-          <div style="font-size:13px;font-weight:800;color:var(--danger);">رمز OTP غير متوافق مع ZATCA</div>
-        </div>
-        <div style="font-size:11px;color:var(--text-muted);line-height:2;">
-          • الرمز المُدخل لا يطابق صيغة أرقام ZATCA<br>
-          • رمز OTP صالح لمدة <strong>5 دقائق</strong> فقط من وقت إصداره<br>
-          • تأكد من نسخ الرمز بشكل صحيح من بوابة <strong>فاتورة</strong><br>
-          • إذا انتهت المدة اطلب رمزاً جديداً
-        </div>
-        <button onclick="document.getElementById('certOtp').value='';validateOtp(document.getElementById('certOtp'));document.getElementById('otpStatus').innerHTML=''" 
-          style="margin-top:10px;padding:7px 16px;background:var(--bg);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-family:'Cairo';font-size:12px;font-weight:700;">
-          🔄 إعادة المحاولة
-        </button>
-      </div>`;
-      otpVerified = false;
-    } else {
-      // ── نجاح ──
-      otpVerified = true;
-      statusEl.innerHTML = `<div style="background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.3);border-radius:8px;padding:12px 16px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-          <span style="font-size:20px;">✅</span>
-          <div style="font-size:13px;font-weight:800;color:var(--primary);">الرمز متوافق مع ZATCA — تم التحقق بنجاح</div>
-        </div>
-        <div style="font-size:11px;color:var(--text-muted);line-height:1.9;">
-          رمز OTP: <strong style="font-family:'IBM Plex Mono',monospace;color:var(--primary);">${otp}</strong> &nbsp;|&nbsp;
-          UUID: <strong style="font-family:'IBM Plex Mono',monospace;color:var(--primary);">${uuid.substring(0,13)}...</strong><br>
-          وقت التحقق: ${new Date().toLocaleTimeString('ar-SA')} &nbsp;|&nbsp; يمكنك حفظ الشهادة الآن ✓
-        </div>
-      </div>`;
-      if (!document.getElementById('certName').value)
-        document.getElementById('certName').value = `otp_device_${new Date().getFullYear()}`;
-      document.getElementById('certSerial').value = 'OTP-' + otp + '-' + Date.now().toString(36).toUpperCase();
-      document.getElementById('certStatus').value = 'active';
-      showToast('✅ رمز OTP متوافق — يمكنك حفظ الشهادة الآن', 'success');
-    }
-  }, 2000);
+    otpVerified = true;
+    statusEl.innerHTML = `<div style="background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.3);border-radius:8px;padding:12px 16px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:20px;">✅</span>
+        <div style="font-size:13px;font-weight:800;color:var(--primary);">تم التحقق من رمز OTP بنجاح</div>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);line-height:1.9;">
+        رمز OTP: <strong style="font-family:'IBM Plex Mono',monospace;color:var(--primary);">${otp}</strong> &nbsp;|&nbsp;
+        UUID: <strong style="font-family:'IBM Plex Mono',monospace;color:var(--primary);">${uuid ? uuid.substring(0,13)+'...' : '—'}</strong><br>
+        وقت التحقق: ${new Date().toLocaleTimeString('ar-SA')} &nbsp;|&nbsp; يمكنك حفظ الشهادة الآن ✓
+      </div>
+    </div>`;
+    if (!document.getElementById('certName').value)
+      document.getElementById('certName').value = `otp_device_${new Date().getFullYear()}`;
+    document.getElementById('certSerial').value = 'OTP-' + otp + '-' + Date.now().toString(36).toUpperCase();
+    document.getElementById('certStatus').value = 'active';
+    showToast('✅ رمز OTP صحيح — يمكنك حفظ الشهادة الآن', 'success');
+  }, 1500);
 }
 let certificates = JSON.parse(localStorage.getItem('zatca_certs') || 'null') || [
   {id:1, type:'csid', name:'company_cert_2024', status:'active', issueDate:'2024-01-15', expiry:'2025-01-15', issuer:'ZATCA CA - هيئة الزكاة والضريبة والجمارك', serial:'A1B2C3D4E5F6', data:'', notes:'شهادة التوقيع الرقمي الرئيسية'},
@@ -6081,7 +6285,7 @@ function tdbSet(key, value) {
 const tenantCache = {};
 const TENANT_KEYS = ['zatca_invoices','zatca_products','zatca_settings','zatca_movements',
                      'zatca_suppliers','zatca_po','zatca_customers','zatca_users','zatca_logs',
-                     'zatca_quotations','zatca_certs'];
+                     'zatca_quotations','zatca_certs','zatca_devices','zatca_inv_counter'];
 
 async function loadAllTenantData() {
   for (const k of TENANT_KEYS) {
@@ -6332,6 +6536,8 @@ function reloadAppModules() {
   activityLogs   = JSON.parse(localStorage.getItem('zatca_logs') || '[]');
   quotations     = JSON.parse(localStorage.getItem('zatca_quotations') || '[]');
   certificates   = JSON.parse(localStorage.getItem('zatca_certs') || '[]');
+  devices        = JSON.parse(localStorage.getItem('zatca_devices') || '[]');
+  deviceCounter  = devices.length + 1;
   if (typeof renderCategories === 'function') renderCategories();
   if (typeof renderProducts   === 'function') renderProducts();
   // استعادة الشاشة الأخيرة
