@@ -1606,6 +1606,10 @@
           <label class="sa-form-label">اسم المؤسسة (عربي) *</label>
           <input class="sa-form-input" id="sa_name" placeholder="شركة الأمل للتجارة">
         </div>
+        <div class="sa-form-group" style="grid-column:span 2;">
+          <label class="sa-form-label">اسم المؤسسة (إنجليزي)</label>
+          <input class="sa-form-input" id="sa_nameEn" placeholder="Al Amal Trading Co." dir="ltr">
+        </div>
         <div class="sa-form-group">
           <label class="sa-form-label">الرقم الضريبي (15 رقم) *</label>
           <input class="sa-form-input" id="sa_vat" placeholder="310000000000000" maxlength="15" dir="ltr">
@@ -1621,6 +1625,57 @@
         <div class="sa-form-group">
           <label class="sa-form-label">الهاتف</label>
           <input class="sa-form-input" id="sa_phone" placeholder="0500000000" dir="ltr">
+        </div>
+        <div class="sa-form-group">
+          <label class="sa-form-label">العنوان</label>
+          <input class="sa-form-input" id="sa_address" placeholder="طريق الملك فهد">
+        </div>
+        <div class="sa-form-group">
+          <label class="sa-form-label">الرمز البريدي</label>
+          <input class="sa-form-input" id="sa_zipCode" placeholder="12345" dir="ltr">
+        </div>
+      </div>
+
+      <!-- ZATCA Device Integration Section -->
+      <div style="border-top:1px solid rgba(255,255,255,0.07);margin-top:16px;padding-top:16px;">
+        <div style="font-size:12px;font-weight:800;color:#1a1a2e;margin-bottom:12px;">🔐 بيانات ربط ZATCA (المرحلة الثانية)</div>
+        <div class="sa-form-grid">
+          <div class="sa-form-group">
+            <label class="sa-form-label">EGS UUID</label>
+            <input class="sa-form-input" id="sa_egsUuid" dir="ltr" style="font-family:'IBM Plex Mono',monospace;font-size:11px;" placeholder="سيتم توليده تلقائياً">
+          </div>
+          <div class="sa-form-group">
+            <label class="sa-form-label">الرقم التسلسلي للجهاز</label>
+            <input class="sa-form-input" id="sa_deviceSerial" dir="ltr" style="font-family:'IBM Plex Mono',monospace;font-size:11px;" placeholder="SLS_XXXXXXXX">
+          </div>
+          <div class="sa-form-group">
+            <label class="sa-form-label">اسم الفرع (OU)</label>
+            <input class="sa-form-input" id="sa_branch" placeholder="Main Branch" value="Main Branch">
+          </div>
+          <div class="sa-form-group">
+            <label class="sa-form-label">بيئة ZATCA</label>
+            <select class="sa-form-input" id="sa_zatcaEnv">
+              <option value="sandbox">Sandbox - اختبار</option>
+              <option value="simulation">Simulation - محاكاة</option>
+              <option value="production">Production - إنتاج</option>
+            </select>
+          </div>
+          <div class="sa-form-group" style="grid-column:span 2;">
+            <label class="sa-form-label">Compliance CSID (binarySecurityToken)</label>
+            <textarea class="sa-form-input" id="sa_csid" rows="2" dir="ltr" style="font-family:'IBM Plex Mono',monospace;font-size:10px;resize:vertical;" placeholder="الصق هنا binarySecurityToken من ZATCA..."></textarea>
+          </div>
+          <div class="sa-form-group">
+            <label class="sa-form-label">CSID Secret</label>
+            <input class="sa-form-input" id="sa_csidSecret" dir="ltr" style="font-family:'IBM Plex Mono',monospace;font-size:11px;" placeholder="Secret من ZATCA">
+          </div>
+          <div class="sa-form-group">
+            <label class="sa-form-label">Request ID</label>
+            <input class="sa-form-input" id="sa_requestId" dir="ltr" style="font-family:'IBM Plex Mono',monospace;font-size:11px;" placeholder="Request ID">
+          </div>
+          <div class="sa-form-group" style="grid-column:span 2;">
+            <label class="sa-form-label">Private Key (اختياري)</label>
+            <input class="sa-form-input" id="sa_privateKey" dir="ltr" type="password" style="font-family:'IBM Plex Mono',monospace;font-size:11px;" placeholder="المفتاح الخاص للتوقيع">
+          </div>
         </div>
       </div>
       <div style="border-top:1px solid rgba(255,255,255,0.07);margin-top:16px;padding-top:16px;">
@@ -7467,7 +7522,10 @@ async function saRenderTenants(tenants) {
             <span class="sa-badge ${t.active?'sa-badge-on':'sa-badge-off'}">${t.active?'✓ نشطة':'معطلة'}</span>
           </div>
           <div class="sa-tenant-meta">VAT: ${t.vat} &nbsp;|&nbsp; 📍 ${t.city||''} &nbsp;|&nbsp; 👥 ${t.users?.length||0} مستخدم</div>
-          <div class="sa-tenant-meta" style="margin-top:3px;color:#6c5ce7;">🔗 ?tenant=${t.id}</div>
+          <div class="sa-tenant-meta" style="margin-top:3px;">
+            ${t.csid ? '<span style="color:#00b894;font-weight:700;">🔐 ZATCA مربوط</span>' : '<span style="color:#e17055;">⚠️ ZATCA غير مربوط</span>'}
+            &nbsp;|&nbsp; <span style="color:#6c5ce7;">🔗 ?tenant=${t.id}</span>
+          </div>
         </div>
       </div>
       <div class="sa-tenant-foot">
@@ -7522,11 +7580,14 @@ function setTenantsView(mode) {
 function saOpenAddModal() {
   document.getElementById('saModalTitle').textContent = '🏢 إضافة مؤسسة جديدة';
   document.getElementById('saEditId').value = '';
-  ['sa_name','sa_vat','sa_cr','sa_city','sa_phone','sa_adminPass','sa_adminName'].forEach(id => {
+  ['sa_name','sa_nameEn','sa_vat','sa_cr','sa_city','sa_phone','sa_address','sa_zipCode','sa_adminPass','sa_adminName','sa_egsUuid','sa_deviceSerial','sa_csid','sa_csidSecret','sa_requestId','sa_privateKey'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   document.getElementById('sa_logo').value = '🏢';
   document.getElementById('sa_adminUser').value = 'admin';
+  document.getElementById('sa_branch').value = 'Main Branch';
+  document.getElementById('sa_zatcaEnv').value = 'sandbox';
+  document.getElementById('sa_egsUuid').value = generateUUID();
   document.getElementById('saModalErr').style.display = 'none';
   saRenderColors(null);
   document.getElementById('saModal').classList.add('open');
@@ -7539,11 +7600,23 @@ async function saEditTenant(id) {
   document.getElementById('saModalTitle').textContent = '✏️ تعديل المؤسسة';
   document.getElementById('saEditId').value   = id;
   document.getElementById('sa_name').value    = t.name    || '';
+  document.getElementById('sa_nameEn').value  = t.nameEn  || '';
   document.getElementById('sa_vat').value     = t.vat     || '';
   document.getElementById('sa_cr').value      = t.cr      || '';
   document.getElementById('sa_city').value    = t.city    || '';
   document.getElementById('sa_phone').value   = t.phone   || '';
+  document.getElementById('sa_address').value = t.address  || '';
+  document.getElementById('sa_zipCode').value = t.zipCode  || '';
   document.getElementById('sa_logo').value    = t.logo    || '🏢';
+  // ZATCA fields
+  document.getElementById('sa_egsUuid').value     = t.egsUuid      || '';
+  document.getElementById('sa_deviceSerial').value= t.deviceSerial || '';
+  document.getElementById('sa_branch').value      = t.branch       || 'Main Branch';
+  document.getElementById('sa_zatcaEnv').value    = t.zatcaEnv     || 'sandbox';
+  document.getElementById('sa_csid').value        = t.csid         || '';
+  document.getElementById('sa_csidSecret').value  = t.csidSecret   || '';
+  document.getElementById('sa_requestId').value   = t.requestId    || '';
+  document.getElementById('sa_privateKey').value  = t.privateKey   || '';
   const admin = t.users?.find(u => u.role === 'مدير') || t.users?.[0] || {};
   document.getElementById('sa_adminUser').value = admin.username || 'admin';
   document.getElementById('sa_adminPass').value = admin.password || '';
@@ -7577,6 +7650,21 @@ async function saSaveTenant() {
     role: 'مدير', icon: '👑'
   };
 
+  // ZATCA data from form
+  const zatcaData = {
+    nameEn:       document.getElementById('sa_nameEn').value.trim(),
+    address:      document.getElementById('sa_address').value.trim(),
+    zipCode:      document.getElementById('sa_zipCode').value.trim(),
+    egsUuid:      document.getElementById('sa_egsUuid').value.trim(),
+    deviceSerial: document.getElementById('sa_deviceSerial').value.trim(),
+    branch:       document.getElementById('sa_branch').value.trim(),
+    zatcaEnv:     document.getElementById('sa_zatcaEnv').value,
+    csid:         document.getElementById('sa_csid').value.trim(),
+    csidSecret:   document.getElementById('sa_csidSecret').value.trim(),
+    requestId:    document.getElementById('sa_requestId').value.trim(),
+    privateKey:   document.getElementById('sa_privateKey').value.trim(),
+  };
+
   if (editId) {
     const t = tenants.find(x => x.id === editId);
     t.name  = name;
@@ -7586,6 +7674,7 @@ async function saSaveTenant() {
     t.phone = document.getElementById('sa_phone').value.trim();
     t.logo  = document.getElementById('sa_logo').value.trim() || '🏢';
     t.color = saColor;
+    Object.assign(t, zatcaData);
     if (!t.users) t.users = [];
     const idx = t.users.findIndex(u => u.role === 'مدير');
     if (idx > -1) t.users[idx] = adminObj; else t.users.unshift(adminObj);
@@ -7602,7 +7691,8 @@ async function saSaveTenant() {
       color:     saColor,
       active:    true,
       createdAt: new Date().toISOString(),
-      users:     [adminObj]
+      users:     [adminObj],
+      ...zatcaData
     };
     await masterPutTenant(newT);
     saToast(`✅ تمت إضافة "${name}" بنجاح`);
