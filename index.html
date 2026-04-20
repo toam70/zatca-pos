@@ -3185,8 +3185,9 @@
               </select>
             </div>
             <div class="form-group" style="margin-bottom:0;">
-              <label style="font-size:11px;">Proxy URL (اختياري)</label>
-              <input class="form-input" id="deviceProxyUrl" dir="ltr" style="font-size:11px;font-family:'IBM Plex Mono',monospace;" placeholder="http://localhost:3030" value="http://localhost:3030">
+              <label style="font-size:11px;">Proxy URL <span style="color:var(--text-muted);font-weight:400;">(لحل CORS)</span></label>
+              <input class="form-input" id="deviceProxyUrl" dir="ltr" style="font-size:11px;font-family:'IBM Plex Mono',monospace;" placeholder="https://zatca-proxy.YOUR-NAME.workers.dev">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">Cloudflare Worker أو http://localhost:3030</div>
             </div>
           </div>
         </div>
@@ -6016,8 +6017,9 @@ async function zatcaComplianceCSID(csrBase64, otp, env, proxyUrl) {
     if (!(e.name==='TypeError' || e.message.includes('Failed to fetch') || e.message.includes('NetworkError'))) throw e;
   }
 
-  // 3) محاولة عبر Proxy خارجي
-  const proxy = (proxyUrl || 'http://localhost:3030').replace(/\/$/,'');
+  // 3) محاولة عبر Proxy خارجي (Cloudflare Worker أو localhost)
+  if (!proxyUrl) throw new TypeError('No proxy configured');
+  const proxy = proxyUrl.replace(/\/$/,'');
   return _zatcaFetch(proxy + '/compliance?env=' + env, {method:'POST', headers, body});
 }
 
@@ -6039,8 +6041,9 @@ async function zatcaProductionCSID(requestID, token, secret, env, proxyUrl) {
     if (!(e.name==='TypeError' || e.message.includes('Failed to fetch') || e.message.includes('NetworkError'))) throw e;
   }
 
-  // 3) محاولة عبر Proxy خارجي
-  const proxy = (proxyUrl || 'http://localhost:3030').replace(/\/$/,'');
+  // 3) محاولة عبر Proxy خارجي (Cloudflare Worker أو localhost)
+  if (!proxyUrl) throw new TypeError('No proxy configured');
+  const proxy = proxyUrl.replace(/\/$/,'');
   return _zatcaFetch(proxy + '/production/csids?env=' + env, {method:'POST', headers, body});
 }
 
@@ -6064,7 +6067,7 @@ function openAddDeviceModal() {
   const envSel = document.getElementById('deviceEnv');
   if (envSel) envSel.value = localStorage.getItem('zatca_env') || 'sandbox';
   const proxyEl = document.getElementById('deviceProxyUrl');
-  if (proxyEl) proxyEl.value = localStorage.getItem('zatca_proxy_url') || 'http://localhost:3030';
+  if (proxyEl) proxyEl.value = localStorage.getItem('zatca_proxy_url') || '';
 }
 
 function closeDeviceModal() {
@@ -6234,31 +6237,60 @@ function _zatcaError(msg, csrData, otp, env) {
 }
 
 function _zatcaCorsHelp(csrBase64, otp, env) {
+  const workerCode = `const ZATCA_BASES={sandbox:'https://gw-fatoora.zatca.gov.sa/e-invoicing/developer-portal',simulation:'https://gw-fatoora.zatca.gov.sa/e-invoicing/simulation',production:'https://gw-fatoora.zatca.gov.sa/e-invoicing/core'};const CORS={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'POST,GET,OPTIONS','Access-Control-Allow-Headers':'Content-Type,OTP,Authorization,Accept,Accept-Language,Accept-Version'};export default{async fetch(request){const url=new URL(request.url);if(request.method==='OPTIONS')return new Response(null,{status:204,headers:CORS});if(request.method==='GET')return new Response(JSON.stringify({ok:true}),{status:200,headers:{...CORS,'Content-Type':'application/json'}});if(request.method!=='POST'||!['/compliance','/production/csids'].includes(url.pathname))return new Response('{}',{status:404,headers:CORS});const env=url.searchParams.get('env')||'sandbox';const base=ZATCA_BASES[env];if(!base)return new Response('{}',{status:400,headers:CORS});const body=await request.text();const h={'Content-Type':'application/json','Accept':'application/json','Accept-Language':request.headers.get('accept-language')||'ar','Accept-Version':request.headers.get('accept-version')||'V2'};const otp=request.headers.get('otp');const auth=request.headers.get('authorization');if(otp)h['OTP']=otp;if(auth)h['Authorization']=auth;try{const r=await fetch(base+url.pathname,{method:'POST',headers:h,body});const t=await r.text();return new Response(t,{status:r.status,headers:{...CORS,'Content-Type':'application/json'}});}catch(e){return new Response(JSON.stringify({error:e.message}),{status:502,headers:{...CORS,'Content-Type':'application/json'}});}}};`;
+
   return `<div style="background:rgba(255,184,0,0.08);border:1px solid rgba(255,184,0,0.3);border-radius:10px;padding:16px;">
-    <div style="font-size:13px;font-weight:800;color:#B07F00;margin-bottom:8px;">⚠️ تعذّر الاتصال مع ZATCA</div>
+    <div style="font-size:13px;font-weight:800;color:#B07F00;margin-bottom:12px;">⚠️ تعذّر الاتصال المباشر مع ZATCA — اختر الحل المناسب:</div>
 
-    <!-- الخطوة 1: تشغيل الـ Proxy -->
-    <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
-      <div style="font-size:12px;font-weight:800;margin-bottom:8px;">① شغّل Proxy Server في Terminal:</div>
-      <div style="background:#1a1a2e;border-radius:6px;padding:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
-        <code style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#00C896;">node proxy.js</code>
-        <button onclick="navigator.clipboard.writeText('node proxy.js').then(()=>showToast('تم النسخ','success'))" style="background:rgba(0,200,150,0.2);border:none;border-radius:5px;padding:4px 10px;cursor:pointer;color:#00C896;font-size:11px;font-family:'Cairo';">نسخ</button>
+    <!-- الحل 1: Cloudflare Worker (مناسب لـ GitHub Pages) -->
+    <div style="background:white;border:2px solid rgba(0,200,150,0.4);border-radius:10px;padding:14px;margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:800;color:var(--primary);margin-bottom:10px;">☁️ الحل الأول: Cloudflare Worker (مجاني — يعمل مع GitHub Pages)</div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:11px;background:rgba(0,200,150,0.06);border-radius:6px;padding:8px;">
+          <b>① افتح</b> <a href="https://workers.cloudflare.com" target="_blank" style="color:var(--primary);">workers.cloudflare.com</a> وسجّل حساباً مجانياً
+        </div>
+        <div style="font-size:11px;background:rgba(0,200,150,0.06);border-radius:6px;padding:8px;">
+          <b>② أنشئ Worker جديد</b> ← اختر "Edit Code"
+        </div>
+        <div style="font-size:11px;background:rgba(0,200,150,0.06);border-radius:6px;padding:8px;">
+          <b>③ احذف الكود الموجود والصق هذا الكود:</b>
+          <div style="background:#1a1a2e;border-radius:6px;padding:8px;margin-top:6px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+            <code style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#aaa;word-break:break-all;line-height:1.5;">(انسخ من ملف cloudflare-worker.js في المشروع)</code>
+            <button onclick="navigator.clipboard.writeText(${JSON.stringify(workerCode)}).then(()=>showToast('تم نسخ كود الـ Worker','success'))" style="background:rgba(0,200,150,0.2);border:none;border-radius:5px;padding:4px 10px;cursor:pointer;color:#00C896;font-size:11px;white-space:nowrap;font-family:'Cairo';">نسخ الكود</button>
+          </div>
+        </div>
+        <div style="font-size:11px;background:rgba(0,200,150,0.06);border-radius:6px;padding:8px;">
+          <b>④ اضغط "Save and Deploy"</b> ثم انسخ رابط الـ Worker<br>
+          <span style="color:var(--text-muted);">مثال: https://zatca-proxy.YOUR-NAME.workers.dev</span>
+        </div>
+        <div style="font-size:11px;background:rgba(0,200,150,0.06);border-radius:6px;padding:8px;">
+          <b>⑤ الصق رابط الـ Worker في حقل "Proxy URL" أعلاه</b>، ثم اضغط:
+        </div>
       </div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">ملف proxy.js موجود في نفس مجلد index.html</div>
-    </div>
 
-    <!-- الخطوة 2: إعادة المحاولة -->
-    <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
-      <div style="font-size:12px;font-weight:800;margin-bottom:8px;">② بعد تشغيل الـ Proxy، اضغط:</div>
-      <button onclick="zatcaRetryWithProxy('${otp}','${env}')" class="btn btn-primary" style="width:100%;padding:12px;font-size:13px;">
+      <button onclick="zatcaRetryWithProxy('${otp}','${env}')" class="btn btn-primary" style="width:100%;padding:10px;font-size:13px;margin-top:10px;">
         🔄 إعادة المحاولة عبر Proxy
       </button>
-      <div id="proxyCheckStatus" style="margin-top:8px;font-size:11px;"></div>
+      <div id="proxyCheckStatus" style="margin-top:6px;font-size:11px;"></div>
     </div>
+
+    <!-- الحل 2: تشغيل محلي -->
+    <details style="margin-bottom:10px;">
+      <summary style="font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted);padding:6px 0;">💻 أو شغّل النظام محلياً (Node.js) ▼</summary>
+      <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:8px;">
+        <div style="font-size:11px;margin-bottom:8px;">شغّل هذا الأمر في Terminal بجانب مجلد index.html:</div>
+        <div style="background:#1a1a2e;border-radius:6px;padding:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <code style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#00C896;">node proxy.js</code>
+          <button onclick="navigator.clipboard.writeText('node proxy.js').then(()=>showToast('تم النسخ','success'))" style="background:rgba(0,200,150,0.2);border:none;border-radius:5px;padding:4px 10px;cursor:pointer;color:#00C896;font-size:11px;font-family:'Cairo';">نسخ</button>
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">سيفتح المتصفح تلقائياً على http://localhost:3030 — ولا حاجة لـ Proxy</div>
+      </div>
+    </details>
 
     <!-- بديل: curl يدوي -->
     <details style="margin-bottom:10px;">
-      <summary style="font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted);padding:4px 0;">أو استخدم curl يدوياً ▼</summary>
+      <summary style="font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted);padding:6px 0;">أو استخدم curl يدوياً ▼</summary>
       <div style="margin-top:8px;">
         ${_zatcaCurlSection(csrBase64, otp, env)}
         <div style="margin-top:10px;">
@@ -6273,17 +6305,22 @@ function _zatcaCorsHelp(csrBase64, otp, env) {
 
 async function zatcaRetryWithProxy(otp, env) {
   const statusEl = document.getElementById('proxyCheckStatus');
-  const proxyUrl = document.getElementById('deviceProxyUrl')?.value?.trim() || 'http://localhost:3030';
+  const proxyUrl = document.getElementById('deviceProxyUrl')?.value?.trim();
+
+  if (!proxyUrl) {
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--danger);">❌ أدخل Proxy URL أولاً (Cloudflare Worker أو http://localhost:3030)</span>';
+    return;
+  }
 
   if (statusEl) statusEl.innerHTML = '<span style="color:var(--accent2);">جاري التحقق من الـ Proxy...</span>';
 
   // Test proxy is reachable
   try {
-    const ping = await fetch(proxyUrl + '/', {method:'GET'});
+    const ping = await fetch(proxyUrl.replace(/\/$/,'') + '/ping', {method:'GET'});
     if (!ping.ok) throw new Error('not ok');
     if (statusEl) statusEl.innerHTML = '<span style="color:#00956E;">✅ Proxy يعمل — جاري إعادة المحاولة...</span>';
   } catch(e) {
-    if (statusEl) statusEl.innerHTML = '<span style="color:var(--danger);">❌ الـ Proxy غير متاح — تأكد من تشغيل: <code>node proxy.js</code></span>';
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--danger);">❌ الـ Proxy غير متاح — تأكد من رابط Cloudflare Worker أو تشغيل <code>node proxy.js</code></span>';
     return;
   }
 
