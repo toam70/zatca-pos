@@ -6219,20 +6219,148 @@ function _zatcaError(msg, csrData, otp, env) {
 
 function _zatcaCorsHelp(csrBase64, otp, env) {
   return `<div style="background:rgba(255,184,0,0.08);border:1px solid rgba(255,184,0,0.3);border-radius:10px;padding:16px;">
-    <div style="font-size:13px;font-weight:800;color:#B07F00;margin-bottom:8px;">⚠️ لم يمكن الاتصال مع ZATCA</div>
-    <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">تعذر الاتصال المباشر والاتصال عبر Proxy. تأكد من تشغيل Proxy Server:</p>
-    <div style="background:#1a1a2e;border-radius:8px;padding:12px;margin-bottom:12px;">
-      <div style="font-size:11px;color:#aaa;margin-bottom:6px;">شغّل هذا الأمر في Terminal أولاً:</div>
-      <pre style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#00C896;margin:0;">node proxy.js</pre>
+    <div style="font-size:13px;font-weight:800;color:#B07F00;margin-bottom:8px;">⚠️ تعذّر الاتصال مع ZATCA</div>
+
+    <!-- الخطوة 1: تشغيل الـ Proxy -->
+    <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:800;margin-bottom:8px;">① شغّل Proxy Server في Terminal:</div>
+      <div style="background:#1a1a2e;border-radius:6px;padding:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <code style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#00C896;">node proxy.js</code>
+        <button onclick="navigator.clipboard.writeText('node proxy.js').then(()=>showToast('تم النسخ','success'))" style="background:rgba(0,200,150,0.2);border:none;border-radius:5px;padding:4px 10px;cursor:pointer;color:#00C896;font-size:11px;font-family:'Cairo';">نسخ</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">ملف proxy.js موجود في نفس مجلد index.html</div>
     </div>
-    <p style="font-size:11px;color:var(--text-muted);margin-bottom:12px;">أو استخدم أمر curl يدوياً:</p>
-    ${_zatcaCurlSection(csrBase64, otp, env)}
-    <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px;">
-      <div style="font-size:12px;font-weight:700;margin-bottom:6px;">📥 الصق الرد من ZATCA هنا:</div>
-      <textarea id="zatcaManualResp" class="form-input" rows="4" dir="ltr" style="font-family:'IBM Plex Mono',monospace;font-size:10px;" placeholder='{"requestID":"...","binarySecurityToken":"...","secret":"..."}'></textarea>
-      <button onclick="zatcaHandleManualResponse()" class="btn btn-primary btn-sm" style="margin-top:8px;">✅ تأكيد الاستجابة</button>
+
+    <!-- الخطوة 2: إعادة المحاولة -->
+    <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:800;margin-bottom:8px;">② بعد تشغيل الـ Proxy، اضغط:</div>
+      <button onclick="zatcaRetryWithProxy('${otp}','${env}')" class="btn btn-primary" style="width:100%;padding:12px;font-size:13px;">
+        🔄 إعادة المحاولة عبر Proxy
+      </button>
+      <div id="proxyCheckStatus" style="margin-top:8px;font-size:11px;"></div>
     </div>
+
+    <!-- بديل: curl يدوي -->
+    <details style="margin-bottom:10px;">
+      <summary style="font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted);padding:4px 0;">أو استخدم curl يدوياً ▼</summary>
+      <div style="margin-top:8px;">
+        ${_zatcaCurlSection(csrBase64, otp, env)}
+        <div style="margin-top:10px;">
+          <div style="font-size:12px;font-weight:700;margin-bottom:6px;">📥 الصق الرد من ZATCA هنا:</div>
+          <textarea id="zatcaManualResp" class="form-input" rows="4" dir="ltr" style="font-family:'IBM Plex Mono',monospace;font-size:10px;" placeholder='{"requestID":"...","binarySecurityToken":"...","secret":"..."}'></textarea>
+          <button onclick="zatcaHandleManualResponse()" class="btn btn-primary btn-sm" style="margin-top:8px;">✅ تأكيد الاستجابة</button>
+        </div>
+      </div>
+    </details>
   </div>`;
+}
+
+async function zatcaRetryWithProxy(otp, env) {
+  const statusEl = document.getElementById('proxyCheckStatus');
+  const proxyUrl = document.getElementById('deviceProxyUrl')?.value?.trim() || 'http://localhost:3030';
+
+  if (statusEl) statusEl.innerHTML = '<span style="color:var(--accent2);">جاري التحقق من الـ Proxy...</span>';
+
+  // Test proxy is reachable
+  try {
+    const ping = await fetch(proxyUrl + '/', {method:'GET'});
+    if (!ping.ok) throw new Error('not ok');
+    if (statusEl) statusEl.innerHTML = '<span style="color:#00956E;">✅ Proxy يعمل — جاري إعادة المحاولة...</span>';
+  } catch(e) {
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--danger);">❌ الـ Proxy غير متاح — تأكد من تشغيل: <code>node proxy.js</code></span>';
+    return;
+  }
+
+  // Retry full onboarding
+  const nextBtn = document.getElementById('deviceNextBtn');
+  const mainStatusEl = document.getElementById('deviceOtpStatus');
+  if (!_zatcaCSRData) {
+    if (mainStatusEl) mainStatusEl.innerHTML = _zatcaProgress('إعادة توليد CSR...');
+    const info = {
+      cn: document.getElementById('deviceName').value.trim(),
+      org: document.getElementById('deviceOrg').value.trim(),
+      orgUnit: document.getElementById('deviceBranch').value.trim() || 'Main Branch',
+      country: 'SA',
+      egsType: document.getElementById('deviceEgsType').value,
+      modelSN: '1.0',
+      deviceSN: document.getElementById('deviceSerial').value.trim() || generateDeviceSerial(),
+      egsUuid: document.getElementById('deviceUuid').value.trim(),
+      vatNumber: document.getElementById('deviceVat').value.trim()
+    };
+    try { _zatcaCSRData = await zatcaBuildCSR(info); } catch(e) {
+      if (mainStatusEl) mainStatusEl.innerHTML = _zatcaError('فشل توليد CSR: ' + e.message);
+      return;
+    }
+  }
+
+  if (mainStatusEl) mainStatusEl.innerHTML = _zatcaProgress('إرسال CSR عبر Proxy إلى ZATCA...');
+
+  let compRes;
+  try {
+    compRes = await _zatcaFetch(proxyUrl.replace(/\/$/,'') + '/compliance?env=' + env, {
+      method: 'POST',
+      headers: {'Accept':'application/json','Accept-Language':'ar','Accept-Version':'V2','OTP':otp,'Content-Type':'application/json'},
+      body: JSON.stringify({csr: _zatcaCSRData.csrBase64})
+    });
+  } catch(e) {
+    if (mainStatusEl) mainStatusEl.innerHTML = _zatcaError('خطأ من ZATCA: ' + e.message, _zatcaCSRData, otp, env);
+    return;
+  }
+
+  // Production CSID
+  if (mainStatusEl) mainStatusEl.innerHTML = _zatcaProgress('الحصول على شهادة الإنتاج...');
+  let prodRes = null;
+  try {
+    prodRes = await _zatcaFetch(proxyUrl.replace(/\/$/,'') + '/production/csids?env=' + env, {
+      method: 'POST',
+      headers: {'Accept':'application/json','Accept-Language':'ar','Accept-Version':'V2','Authorization':'Basic '+btoa(compRes.binarySecurityToken+':'+compRes.secret),'Content-Type':'application/json'},
+      body: JSON.stringify({compliance_request_id: compRes.requestID})
+    });
+  } catch(e) { prodRes = null; }
+
+  // Save
+  const today = new Date().toISOString().split('T')[0];
+  const info2 = {
+    cn: document.getElementById('deviceName').value.trim(),
+    org: document.getElementById('deviceOrg').value.trim(),
+    orgUnit: document.getElementById('deviceBranch').value.trim() || 'Main Branch',
+    deviceSN: document.getElementById('deviceSerial').value.trim(),
+    uuid: document.getElementById('deviceUuid').value.trim(),
+    vatNumber: document.getElementById('deviceVat').value.trim(),
+    egsType: document.getElementById('deviceEgsType').value
+  };
+  const finalToken = prodRes?.binarySecurityToken || compRes.binarySecurityToken;
+  const finalSecret = prodRes?.secret || compRes.secret;
+  const device = {
+    id: deviceCounter++, name: info2.cn, org: info2.org, branch: info2.orgUnit,
+    serial: info2.deviceSN, uuid: info2.uuid, vatNumber: info2.vatNumber,
+    egsType: info2.egsType, country: 'SA', status: 'active', registeredDate: today, env,
+    complianceRequestId: compRes.requestID, binarySecurityToken: finalToken, secret: finalSecret,
+    privateKey: _zatcaCSRData.privateKey
+  };
+  devices.push(device);
+  localStorage.setItem('zatca_devices', JSON.stringify(devices));
+  [
+    {type:'compliance', token: compRes.binarySecurityToken, rid: compRes.requestID},
+    prodRes ? {type:'production', token: prodRes.binarySecurityToken, rid: prodRes.requestID} : null
+  ].filter(Boolean).forEach(c => {
+    certificates.push({ id: certCounter++, type: c.type, name: info2.cn+'_'+c.type, status:'active',
+      issueDate: today, expiry: new Date(new Date().setFullYear(new Date().getFullYear()+1)).toISOString().split('T')[0],
+      issuer:'ZATCA CA - هيئة الزكاة والضريبة والجمارك', serial: c.rid, data: c.token, notes:'تم الربط عبر Proxy' });
+  });
+  localStorage.setItem('zatca_certs', JSON.stringify(certificates));
+
+  _deviceSetStep(3);
+  document.getElementById('deviceResultContent').innerHTML = `
+    <div style="background:rgba(0,200,150,0.08);border:2px solid rgba(0,200,150,0.3);border-radius:12px;padding:20px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">✅</div>
+      <div style="font-size:16px;font-weight:800;color:var(--primary);">تم تسجيل الجهاز بنجاح عبر Proxy!</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">Request ID: <strong>${compRes.requestID||'—'}</strong><br>${prodRes?'✓ Compliance + Production CSID':'✓ Compliance CSID'}</div>
+    </div>
+    <div style="margin-top:16px;text-align:center;">
+      <button class="btn btn-primary btn-sm" onclick="closeDeviceModal();renderDevices();renderCerts();">✓ إغلاق</button>
+    </div>`;
+  showToast('✅ تم تسجيل الجهاز بنجاح', 'success');
 }
 
 function _zatcaCurlSection(csrBase64, otp, env) {
